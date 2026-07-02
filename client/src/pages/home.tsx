@@ -8,7 +8,7 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import type { ExtractedItem, Invoice, InvoiceItem } from "@shared/schema";
-import { FileText, Zap, History } from "lucide-react";
+import { History, ScanLine } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 type AppView = "upload" | "editor" | "preview" | "history";
@@ -16,6 +16,7 @@ type AppView = "upload" | "editor" | "preview" | "history";
 export default function Home() {
   const [view, setView] = useState<AppView>("upload");
   const [extractedItems, setExtractedItems] = useState<ExtractedItem[]>([]);
+  const [extractedGrandTotal, setExtractedGrandTotal] = useState<number>(0);
   const [currentInvoice, setCurrentInvoice] = useState<(Invoice & { items: InvoiceItem[] }) | null>(null);
   const [invoiceNumber, setInvoiceNumber] = useState("INV-39");
   const { toast } = useToast();
@@ -37,6 +38,7 @@ export default function Home() {
     },
     onSuccess: (data) => {
       setExtractedItems(data.items || []);
+      setExtractedGrandTotal(data.grandTotal || 0);
       setView("editor");
       toast({
         title: "Extraction complete",
@@ -87,9 +89,8 @@ export default function Home() {
     extractMutation.mutate(formData);
   };
 
-  const handleSaveInvoice = (items: ExtractedItem[]) => {
-    const total = items.reduce((sum, item) => sum + item.quantity * item.rate, 0);
-    saveMutation.mutate({ items, totalAmount: total });
+  const handleSaveInvoice = (items: ExtractedItem[], grandTotal: number) => {
+    saveMutation.mutate({ items, totalAmount: grandTotal });
   };
 
   const handleViewInvoice = async (invoice: Invoice) => {
@@ -108,13 +109,17 @@ export default function Home() {
     <div className="min-h-screen bg-background">
       <header className="sticky top-0 z-50 border-b bg-background/80 backdrop-blur-md">
         <div className="mx-auto max-w-6xl flex items-center justify-between gap-2 px-4 py-3">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2.5">
             <div className="flex items-center justify-center w-9 h-9 rounded-md bg-primary">
-              <Zap className="w-5 h-5 text-primary-foreground" />
+              <svg width="18" height="18" viewBox="0 0 18 18" fill="none" className="text-primary-foreground">
+                <rect x="2" y="3.5" width="14" height="2.2" rx="0.8" fill="currentColor"/>
+                <rect x="2" y="7.9" width="14" height="2.2" rx="0.8" fill="currentColor"/>
+                <rect x="2" y="12.3" width="9" height="2" rx="0.8" fill="currentColor"/>
+              </svg>
             </div>
             <div>
-              <h1 className="text-lg font-semibold leading-tight" data-testid="text-app-title">Digitizer</h1>
-              <p className="text-xs text-muted-foreground leading-tight">Bazaar Note to Invoice</p>
+              <h1 className="text-lg font-bold leading-tight" data-testid="text-app-title">DigiBill</h1>
+              <p className="text-[10px] text-muted-foreground leading-tight">Digital Invoice Solutions</p>
             </div>
           </div>
           <div className="flex items-center gap-1">
@@ -124,7 +129,7 @@ export default function Home() {
               onClick={() => { setView("upload"); setExtractedItems([]); setCurrentInvoice(null); }}
               data-testid="button-new-scan"
             >
-              <Zap className="w-4 h-4 mr-1" />
+              <ScanLine className="w-4 h-4 mr-1" />
               New Scan
             </Button>
             <Button
@@ -153,6 +158,7 @@ export default function Home() {
           <InvoiceEditor
             items={extractedItems}
             invoiceNumber={currentInvNum}
+            grandTotal={extractedGrandTotal}
             onSave={handleSaveInvoice}
             onBack={() => setView("upload")}
             isSaving={saveMutation.isPending}

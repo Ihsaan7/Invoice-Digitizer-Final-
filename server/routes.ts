@@ -2,7 +2,6 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import OpenAI from "openai";
-import { z } from "zod";
 import multer from "multer";
 
 const openai = new OpenAI({
@@ -58,9 +57,9 @@ export async function registerRoutes(
           await storage.createInvoiceItem({
             invoiceId: invoice.id,
             description: item.description,
-            quantity: item.quantity,
+            quantity: 1,
             rate: item.rate,
-            amount: item.quantity * item.rate,
+            amount: item.amount ?? item.rate,
             isUncertain: item.isUncertain ? 1 : 0,
           });
         }
@@ -91,9 +90,9 @@ export async function registerRoutes(
           await storage.createInvoiceItem({
             invoiceId: id,
             description: item.description,
-            quantity: item.quantity,
+            quantity: 1,
             rate: item.rate,
-            amount: item.quantity * item.rate,
+            amount: item.amount ?? item.rate,
             isUncertain: item.isUncertain ? 1 : 0,
           });
         }
@@ -132,26 +131,36 @@ export async function registerRoutes(
         messages: [
           {
             role: "system",
-            content: `You are an OCR specialist that extracts data from handwritten bazaar notes. 
-The notes follow this pattern: [Quantity on far left] [Model Number in middle] [Rate/Amount on far right].
+            content: `You are an OCR specialist that extracts data from handwritten invoice/bazaar notes.
 
-Rules:
-- All model numbers must be prefixed with "MX-". For example, if the note says "4495", convert it to "MX-4495 MOD.no".
-- The description should be in the format "MX-XXXX MOD.no" where XXXX is the model number.
-- Quantity is always on the far left.
-- Rate is always on the far right.
-- Amount = Quantity x Rate.
-- If you are uncertain about any value (hard to read), mark that item with isUncertain: true.
-- Return a JSON array of items.
+CRITICAL RULES — follow these exactly:
 
-Example: A note saying "10 4495 20" should become:
-{ "description": "MX-4495 MOD.no", "quantity": 10, "rate": 20, "amount": 200, "isUncertain": false }
+1. TOTAL LINE: The VERY LAST number/amount written in the note is the GRAND TOTAL for the whole invoice. Do NOT include it as a line item — it belongs only in the "grandTotal" field. Even if the last line looks like an item, it is the total.
 
-Return ONLY valid JSON in this format:
+2. NO QUANTITY: There is no separate quantity column. Every item has quantity = 1. Do NOT extract or invent quantities. The "amount" for each item equals its "rate".
+
+3. DESCRIPTIONS: Preserve the description exactly as written. If a model number appears (like 4495, 45042, MX-44921 etc.), keep it as-is. Do not add or change prefixes unless already present.
+
+4. UNCERTAIN VALUES: If any description or rate is hard to read or ambiguous, set isUncertain: true for that item.
+
+5. LAST NUMBER IS TOTAL: Re-emphasize — if the note has 9 items followed by a number like "540.00" or "540", that final number is the SubTotal/Grand Total. Do not list it as item 10.
+
+Return ONLY valid JSON in this exact format:
 {
   "items": [
-    { "description": "MX-XXXX MOD.no", "quantity": number, "rate": number, "amount": number, "isUncertain": boolean }
-  ]
+    { "description": "string", "rate": number, "amount": number, "isUncertain": boolean }
+  ],
+  "grandTotal": number
+}
+
+Example: A note with lines "MX-4495 40.00", "SIT 25.00", "45042 60.00", and then "125.00" at the end should produce:
+{
+  "items": [
+    { "description": "MX-4495", "rate": 40.00, "amount": 40.00, "isUncertain": false },
+    { "description": "SIT", "rate": 25.00, "amount": 25.00, "isUncertain": false },
+    { "description": "45042", "rate": 60.00, "amount": 60.00, "isUncertain": false }
+  ],
+  "grandTotal": 125.00
 }`
           },
           {
@@ -159,7 +168,7 @@ Return ONLY valid JSON in this format:
             content: [
               {
                 type: "text",
-                text: "Extract all items from this handwritten bazaar note. Return the data as JSON."
+                text: "Extract all items from this handwritten invoice note. Remember: the LAST number is the grand total, not a line item. Return the data as JSON."
               },
               {
                 type: "image_url",
@@ -175,22 +184,24 @@ Return ONLY valid JSON in this format:
       });
 
       const content = response.choices[0]?.message?.content || "{}";
-      let parsed;
+      let parsed: any;
       try {
         parsed = JSON.parse(content);
       } catch {
-        parsed = { items: [] };
+        parsed = { items: [], grandTotal: 0 };
       }
 
       const items = (parsed.items || []).map((item: any) => ({
         description: String(item.description || "[???]"),
-        quantity: Number(item.quantity) || 0,
+        quantity: 1,
         rate: Number(item.rate) || 0,
-        amount: Number(item.amount) || (Number(item.quantity) || 0) * (Number(item.rate) || 0),
+        amount: Number(item.amount) || Number(item.rate) || 0,
         isUncertain: Boolean(item.isUncertain),
       }));
 
-      res.json({ items });
+      const grandTotal = Number(parsed.grandTotal) || items.reduce((s: number, i: any) => s + i.amount, 0);
+
+      res.json({ items, grandTotal });
     } catch (error) {
       console.error("Error extracting data:", error);
       res.status(500).json({ error: "Failed to extract data from image" });

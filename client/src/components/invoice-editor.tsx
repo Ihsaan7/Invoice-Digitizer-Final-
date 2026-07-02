@@ -9,28 +9,31 @@ import type { ExtractedItem } from "@shared/schema";
 interface InvoiceEditorProps {
   items: ExtractedItem[];
   invoiceNumber: string;
-  onSave: (items: ExtractedItem[]) => void;
+  grandTotal?: number;
+  onSave: (items: ExtractedItem[], grandTotal: number) => void;
   onBack: () => void;
   isSaving: boolean;
 }
 
-export function InvoiceEditor({ items: initialItems, invoiceNumber, onSave, onBack, isSaving }: InvoiceEditorProps) {
+export function InvoiceEditor({ items: initialItems, invoiceNumber, grandTotal: initialGrandTotal, onSave, onBack, isSaving }: InvoiceEditorProps) {
   const [items, setItems] = useState<ExtractedItem[]>(initialItems);
 
   useEffect(() => {
     setItems(initialItems);
   }, [initialItems]);
 
-  const total = items.reduce((sum, item) => sum + item.quantity * item.rate, 0);
+  const computedTotal = items.reduce((sum, item) => sum + (item.amount ?? item.rate), 0);
+  const total = initialGrandTotal && initialGrandTotal > 0 ? initialGrandTotal : computedTotal;
 
   const updateItem = useCallback((index: number, field: keyof ExtractedItem, value: string | number | boolean) => {
     setItems(prev => {
       const updated = [...prev];
       updated[index] = { ...updated[index], [field]: value };
-      if (field === "quantity" || field === "rate") {
-        updated[index].amount = Number(updated[index].quantity) * Number(updated[index].rate);
+      if (field === "rate") {
+        updated[index].amount = Number(value);
+        updated[index].quantity = 1;
       }
-      if (field === "description" || field === "quantity" || field === "rate") {
+      if (field === "description" || field === "rate") {
         updated[index].isUncertain = false;
       }
       return updated;
@@ -43,8 +46,8 @@ export function InvoiceEditor({ items: initialItems, invoiceNumber, onSave, onBa
 
   const addItem = useCallback(() => {
     setItems(prev => [...prev, {
-      description: "MX- MOD.no",
-      quantity: 0,
+      description: "",
+      quantity: 1,
       rate: 0,
       amount: 0,
       isUncertain: false,
@@ -52,6 +55,7 @@ export function InvoiceEditor({ items: initialItems, invoiceNumber, onSave, onBa
   }, []);
 
   const uncertainCount = items.filter(i => i.isUncertain).length;
+  const saveTotal = items.reduce((sum, item) => sum + (item.amount ?? item.rate), 0);
 
   return (
     <div className="space-y-4">
@@ -64,7 +68,7 @@ export function InvoiceEditor({ items: initialItems, invoiceNumber, onSave, onBa
             <h2 className="text-xl font-semibold" data-testid="text-editor-title">Edit Extracted Data</h2>
             <p className="text-sm text-muted-foreground">
               Invoice <span className="font-mono font-medium">{invoiceNumber}</span>
-              {" "} &middot; ART FASHION LLC
+              {" "}&middot; ART FASHION LLC
             </p>
           </div>
         </div>
@@ -75,7 +79,7 @@ export function InvoiceEditor({ items: initialItems, invoiceNumber, onSave, onBa
               {uncertainCount} uncertain
             </Badge>
           )}
-          <Button onClick={() => onSave(items)} disabled={isSaving || items.length === 0} data-testid="button-save-invoice">
+          <Button onClick={() => onSave(items, saveTotal)} disabled={isSaving || items.length === 0} data-testid="button-save-invoice">
             <Save className="w-4 h-4 mr-2" />
             {isSaving ? "Saving..." : "Save & Preview"}
           </Button>
@@ -89,9 +93,8 @@ export function InvoiceEditor({ items: initialItems, invoiceNumber, onSave, onBa
               <tr className="border-b bg-muted/30">
                 <th className="text-left text-xs font-medium text-muted-foreground px-4 py-3 w-8">#</th>
                 <th className="text-left text-xs font-medium text-muted-foreground px-4 py-3">Description</th>
-                <th className="text-right text-xs font-medium text-muted-foreground px-4 py-3 w-24">Qty</th>
-                <th className="text-right text-xs font-medium text-muted-foreground px-4 py-3 w-28">Rate (AED)</th>
-                <th className="text-right text-xs font-medium text-muted-foreground px-4 py-3 w-28">Amount (AED)</th>
+                <th className="text-right text-xs font-medium text-muted-foreground px-4 py-3 w-32">Rate (AED)</th>
+                <th className="text-right text-xs font-medium text-muted-foreground px-4 py-3 w-32">Amount (AED)</th>
                 <th className="text-center text-xs font-medium text-muted-foreground px-4 py-3 w-12"></th>
               </tr>
             </thead>
@@ -99,9 +102,7 @@ export function InvoiceEditor({ items: initialItems, invoiceNumber, onSave, onBa
               {items.map((item, index) => (
                 <tr
                   key={index}
-                  className={`border-b last:border-b-0 transition-colors ${
-                    item.isUncertain ? "bg-destructive/5" : ""
-                  }`}
+                  className={`border-b last:border-b-0 transition-colors ${item.isUncertain ? "bg-destructive/5" : ""}`}
                   data-testid={`row-item-${index}`}
                 >
                   <td className="px-4 py-2 text-sm text-muted-foreground">{index + 1}</td>
@@ -109,11 +110,9 @@ export function InvoiceEditor({ items: initialItems, invoiceNumber, onSave, onBa
                     <div className="flex items-center gap-2">
                       <Input
                         value={item.description.includes("[???]") ? "" : item.description}
-                        placeholder={item.isUncertain ? "[???] Uncertain value" : "MX-XXXX MOD.no"}
+                        placeholder={item.isUncertain ? "[???] Uncertain — please verify" : "Item description"}
                         onChange={(e) => updateItem(index, "description", e.target.value)}
-                        className={`h-8 text-sm font-mono ${
-                          item.isUncertain ? "border-destructive/50 text-destructive placeholder:text-destructive/60" : ""
-                        }`}
+                        className={`h-8 text-sm font-mono ${item.isUncertain ? "border-destructive/50 text-destructive placeholder:text-destructive/60" : ""}`}
                         data-testid={`input-description-${index}`}
                       />
                       {item.isUncertain && (
@@ -124,30 +123,16 @@ export function InvoiceEditor({ items: initialItems, invoiceNumber, onSave, onBa
                   <td className="px-4 py-2">
                     <Input
                       type="number"
-                      value={item.quantity || ""}
-                      placeholder="0"
-                      onChange={(e) => updateItem(index, "quantity", Number(e.target.value))}
-                      className={`h-8 text-sm text-right ${
-                        item.isUncertain ? "border-destructive/50" : ""
-                      }`}
-                      data-testid={`input-quantity-${index}`}
-                    />
-                  </td>
-                  <td className="px-4 py-2">
-                    <Input
-                      type="number"
                       value={item.rate || ""}
-                      placeholder="0"
+                      placeholder="0.00"
                       onChange={(e) => updateItem(index, "rate", Number(e.target.value))}
-                      className={`h-8 text-sm text-right ${
-                        item.isUncertain ? "border-destructive/50" : ""
-                      }`}
+                      className={`h-8 text-sm text-right font-mono ${item.isUncertain ? "border-destructive/50" : ""}`}
                       data-testid={`input-rate-${index}`}
                     />
                   </td>
                   <td className="px-4 py-2 text-right">
-                    <span className="text-sm font-medium font-mono" data-testid={`text-amount-${index}`}>
-                      {(item.quantity * item.rate).toFixed(2)}
+                    <span className="text-sm font-medium font-mono pr-2" data-testid={`text-amount-${index}`}>
+                      {(item.amount ?? item.rate).toFixed(2)}
                     </span>
                   </td>
                   <td className="px-4 py-2 text-center">
@@ -165,7 +150,7 @@ export function InvoiceEditor({ items: initialItems, invoiceNumber, onSave, onBa
               ))}
               {items.length === 0 && (
                 <tr>
-                  <td colSpan={6} className="px-4 py-10 text-center text-sm text-muted-foreground">
+                  <td colSpan={5} className="px-4 py-10 text-center text-sm text-muted-foreground">
                     No items extracted. Add items manually or try uploading again.
                   </td>
                 </tr>
@@ -179,11 +164,17 @@ export function InvoiceEditor({ items: initialItems, invoiceNumber, onSave, onBa
             <Plus className="w-4 h-4 mr-1" />
             Add Item
           </Button>
-          <div className="flex items-center gap-4">
-            <span className="text-sm text-muted-foreground">Total AED</span>
-            <span className="text-xl font-bold font-mono" data-testid="text-total-amount">
-              {total.toFixed(2)}
-            </span>
+          <div className="flex items-center gap-6">
+            <div className="flex items-center gap-3 text-sm text-muted-foreground">
+              <span>SubTotal</span>
+              <span className="font-mono font-medium text-foreground">{computedTotal.toFixed(2)}</span>
+            </div>
+            <div className="flex items-center gap-3">
+              <span className="text-sm font-semibold">Total AED</span>
+              <span className="text-xl font-bold font-mono" data-testid="text-total-amount">
+                {total.toFixed(2)}
+              </span>
+            </div>
           </div>
         </div>
       </Card>

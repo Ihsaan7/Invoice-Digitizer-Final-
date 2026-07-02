@@ -44,10 +44,10 @@ export function ImageUploader({ onUpload, isLoading }: ImageUploaderProps) {
           <FileImage className="w-8 h-8 text-primary" />
         </div>
         <h2 className="text-2xl font-semibold" data-testid="text-upload-title">
-          Upload Bazaar Note
+          Upload Invoice Note
         </h2>
         <p className="text-muted-foreground text-sm leading-relaxed">
-          Take a photo or upload an image of a handwritten bazaar note. The AI will extract quantities, model numbers, and rates automatically.
+          Take a photo or upload an image of a handwritten note. The AI will extract model numbers and rates automatically — the last number in your note is treated as the grand total.
         </p>
       </div>
 
@@ -72,7 +72,7 @@ export function ImageUploader({ onUpload, isLoading }: ImageUploaderProps) {
               </div>
               <div className="text-center">
                 <p className="font-medium" data-testid="text-processing">Processing image...</p>
-                <p className="text-sm text-muted-foreground mt-1">AI is extracting bazaar data</p>
+                <p className="text-sm text-muted-foreground mt-1">AI is extracting invoice data</p>
               </div>
             </div>
           ) : preview ? (
@@ -91,7 +91,7 @@ export function ImageUploader({ onUpload, isLoading }: ImageUploaderProps) {
                 <Upload className="w-7 h-7 text-muted-foreground" />
               </div>
               <div className="text-center">
-                <p className="font-medium">Drop your bazaar note here</p>
+                <p className="font-medium">Drop your handwritten note here</p>
                 <p className="text-sm text-muted-foreground mt-1">or click to browse files</p>
               </div>
               <div className="flex items-center gap-2 mt-2 text-xs text-muted-foreground">
@@ -136,9 +136,9 @@ export function ImageUploader({ onUpload, isLoading }: ImageUploaderProps) {
         <h3 className="text-sm font-medium mb-3">How it works</h3>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           {[
-            { step: "1", title: "Upload", desc: "Photo of handwritten note" },
-            { step: "2", title: "Extract", desc: "AI reads Qty, Model, Rate" },
-            { step: "3", title: "Invoice", desc: "Generate professional PDF" },
+            { step: "1", title: "Upload", desc: "Photo of handwritten invoice note" },
+            { step: "2", title: "Extract", desc: "AI reads models, rates & total" },
+            { step: "3", title: "Invoice", desc: "Download a professional PDF" },
           ].map((item) => (
             <div key={item.step} className="flex items-start gap-3">
               <div className="flex-shrink-0 w-7 h-7 rounded-full bg-primary/10 text-primary flex items-center justify-center text-xs font-semibold">

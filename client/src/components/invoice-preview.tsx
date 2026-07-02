@@ -1,5 +1,5 @@
 import { useCallback } from "react";
-import { ArrowLeft, Download, Plus, FileText } from "lucide-react";
+import { ArrowLeft, Download, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -11,107 +11,176 @@ interface InvoicePreviewProps {
   onNewScan: () => void;
 }
 
+const COMPANY_NAME = "DigiBill";
+const COMPANY_CITY = "ISLAMABAD, Pakistan";
+const COMPANY_PHONE = "+923490896977";
+
 export function InvoicePreview({ invoice, onBack, onNewScan }: InvoicePreviewProps) {
-  const total = invoice.items.reduce((sum, item) => sum + item.quantity * item.rate, 0);
+  const total = invoice.items.reduce((sum, item) => sum + (item.amount ?? item.rate), 0);
 
   const generatePDF = useCallback(async () => {
     const { jsPDF } = await import("jspdf");
     const autoTable = (await import("jspdf-autotable")).default;
 
     const doc = new jsPDF();
-    const pageWidth = doc.internal.pageSize.getWidth();
+    const pageW = doc.internal.pageSize.getWidth();
+    const pageH = doc.internal.pageSize.getHeight();
+    const margin = 18;
 
-    doc.setFillColor(20, 30, 48);
-    doc.rect(0, 0, pageWidth, 50, "F");
+    // ── HEADER BLOCK ───────────────────────────────────────────────
+    // Left: logo mark + company name
+    doc.setFillColor(29, 78, 216);          // blue square logo
+    doc.roundedRect(margin, 14, 10, 10, 1.5, 1.5, "F");
+    doc.setFillColor(255, 255, 255);
+    doc.rect(margin + 2.5, 16.5, 5, 1.5, "F");
+    doc.rect(margin + 2.5, 19.5, 5, 1.5, "F");
+    doc.rect(margin + 2.5, 22, 3, 1.2, "F");
 
-    doc.setTextColor(255, 255, 255);
-    doc.setFontSize(22);
+    doc.setTextColor(15, 23, 42);
+    doc.setFontSize(14);
     doc.setFont("helvetica", "bold");
-    doc.text("INVOICE", 20, 25);
+    doc.text(COMPANY_NAME, margin + 13, 21);
 
-    doc.setFontSize(12);
+    doc.setFontSize(8.5);
     doc.setFont("helvetica", "normal");
-    doc.text(invoice.invoiceNumber, 20, 35);
+    doc.setTextColor(80, 90, 110);
+    doc.text(COMPANY_CITY, margin + 13, 27);
+    doc.text(COMPANY_PHONE, margin + 13, 32);
+
+    // Right: INVOICE + number
+    const invoiceNumStr = invoice.invoiceNumber.replace("INV-", "");
+    doc.setFontSize(20);
+    doc.setFont("helvetica", "bold");
+    doc.setTextColor(15, 23, 42);
+    doc.text(`INVOICE ${invoiceNumStr}`, pageW - margin, 21, { align: "right" });
+
+    // Separator line
+    doc.setDrawColor(200, 210, 225);
+    doc.setLineWidth(0.4);
+    doc.line(margin, 38, pageW - margin, 38);
+
+    // ── BILLING INFO ───────────────────────────────────────────────
+    const col2X = pageW / 2 + 10;
+
+    doc.setFontSize(7.5);
+    doc.setFont("helvetica", "normal");
+    doc.setTextColor(100, 115, 135);
+    doc.text("Billed To", margin, 46);
+    doc.text("Invoice Number", col2X, 46);
 
     doc.setFontSize(10);
-    doc.text(`Date: ${new Date(invoice.createdAt).toLocaleDateString("en-GB")}`, pageWidth - 20, 25, { align: "right" });
-    doc.text(`Currency: ${invoice.currency}`, pageWidth - 20, 35, { align: "right" });
-
-    doc.setTextColor(50, 50, 50);
-    doc.setFontSize(11);
     doc.setFont("helvetica", "bold");
-    doc.text("Bill To:", 20, 62);
-    doc.setFont("helvetica", "normal");
-    doc.setFontSize(10);
-    doc.text(invoice.clientName, 20, 70);
-    doc.text(invoice.clientAddress, 20, 77);
+    doc.setTextColor(15, 23, 42);
+    doc.text(invoice.clientName, margin, 53);
+    doc.text(invoice.invoiceNumber, col2X, 53);
 
-    doc.setFont("helvetica", "bold");
-    doc.text("From:", pageWidth - 80, 62);
+    doc.setFontSize(8.5);
     doc.setFont("helvetica", "normal");
-    doc.text("Digitizer", pageWidth - 80, 70);
-    doc.text("Islamabad, Pakistan", pageWidth - 80, 77);
+    doc.setTextColor(80, 90, 110);
+    doc.text(invoice.clientAddress, margin, 59);
 
-    const tableData = invoice.items.map((item, i) => [
-      (i + 1).toString(),
+    // Date Issued
+    doc.setFontSize(7.5);
+    doc.setTextColor(100, 115, 135);
+    doc.text("Date Issued", col2X, 60);
+    doc.setFontSize(8.5);
+    doc.setTextColor(80, 90, 110);
+    const issuedDate = new Date(invoice.createdAt).toLocaleDateString("en-GB", {
+      day: "numeric", month: "long", year: "numeric",
+    });
+    doc.text(issuedDate, col2X, 66);
+
+    // Due Date
+    doc.setFontSize(7.5);
+    doc.setTextColor(100, 115, 135);
+    doc.text("Due Date", col2X, 73);
+    doc.setFontSize(8.5);
+    doc.setTextColor(80, 90, 110);
+    const dueDate = new Date(invoice.createdAt);
+    dueDate.setDate(dueDate.getDate() + 30);
+    doc.text(dueDate.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" }), col2X, 79);
+
+    // ── ITEMS TABLE ────────────────────────────────────────────────
+    const tableData = invoice.items.map((item) => [
       item.description,
-      item.quantity.toString(),
       item.rate.toFixed(2),
-      (item.quantity * item.rate).toFixed(2),
+      (item.amount ?? item.rate).toFixed(2),
     ]);
 
     autoTable(doc, {
-      startY: 90,
-      head: [["#", "Description", "Qty", "Rate (AED)", "Amount (AED)"]],
+      startY: 88,
+      head: [["Description", "Rate", "Amount"]],
       body: tableData,
-      theme: "grid",
+      theme: "plain",
       headStyles: {
-        fillColor: [20, 30, 48],
-        textColor: [255, 255, 255],
-        fontSize: 9,
+        fillColor: [248, 250, 252],
+        textColor: [80, 90, 110],
+        fontSize: 8,
         fontStyle: "bold",
+        lineColor: [200, 210, 225],
+        lineWidth: { bottom: 0.4, top: 0.4, left: 0, right: 0 },
+        cellPadding: { top: 5, bottom: 5, left: 4, right: 4 },
       },
       bodyStyles: {
-        fontSize: 9,
-        textColor: [50, 50, 50],
-      },
-      alternateRowStyles: {
-        fillColor: [245, 247, 250],
+        fontSize: 8.5,
+        textColor: [30, 40, 55],
+        lineColor: [225, 232, 240],
+        lineWidth: { bottom: 0.3, top: 0, left: 0, right: 0 },
+        cellPadding: { top: 5, bottom: 5, left: 4, right: 4 },
       },
       columnStyles: {
-        0: { cellWidth: 12, halign: "center" },
-        1: { cellWidth: "auto" },
-        2: { cellWidth: 20, halign: "right" },
-        3: { cellWidth: 30, halign: "right" },
-        4: { cellWidth: 35, halign: "right" },
+        0: { cellWidth: "auto", halign: "left" },
+        1: { cellWidth: 32, halign: "right" },
+        2: { cellWidth: 36, halign: "right" },
       },
-      margin: { left: 20, right: 20 },
+      margin: { left: margin, right: margin },
     });
 
-    const finalY = (doc as any).lastAutoTable?.finalY || 150;
+    const finalY: number = (doc as any).lastAutoTable?.finalY ?? 160;
 
-    doc.setFillColor(245, 247, 250);
-    doc.rect(pageWidth - 90, finalY + 10, 70, 25, "F");
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(10);
-    doc.setTextColor(50, 50, 50);
-    doc.text("Total AED", pageWidth - 85, finalY + 22);
-    doc.setFontSize(14);
-    doc.setTextColor(20, 30, 48);
-    doc.text(total.toFixed(2), pageWidth - 25, finalY + 30, { align: "right" });
+    // ── SUBTOTAL BLOCK ─────────────────────────────────────────────
+    const blockX = pageW - margin - 80;
+    const blockY = finalY + 8;
 
-    doc.setDrawColor(200, 200, 200);
-    doc.line(20, finalY + 50, pageWidth - 20, finalY + 50);
-    doc.setFontSize(8);
-    doc.setTextColor(150, 150, 150);
+    doc.setDrawColor(200, 210, 225);
+    doc.setLineWidth(0.3);
+    doc.line(blockX, blockY, pageW - margin, blockY);
+
+    doc.setFontSize(8.5);
     doc.setFont("helvetica", "normal");
-    doc.text("Generated by Digitizer - Bazaar Note to Invoice", pageWidth / 2, finalY + 58, { align: "center" });
+    doc.setTextColor(80, 90, 110);
+    doc.text("SubTotal:", blockX, blockY + 8);
+    doc.setFont("helvetica", "bold");
+    doc.setTextColor(15, 23, 42);
+    doc.text(`${total.toFixed(2)}`, pageW - margin, blockY + 8, { align: "right" });
+
+    doc.setFontSize(8);
+    doc.setFont("helvetica", "normal");
+    doc.setTextColor(100, 115, 135);
+    doc.text("AED", pageW - margin, blockY + 14, { align: "right" });
+
+    doc.setDrawColor(200, 210, 225);
+    doc.line(blockX, blockY + 18, pageW - margin, blockY + 18);
+
+    // ── FOOTER ─────────────────────────────────────────────────────
+    doc.setFontSize(7);
+    doc.setFont("helvetica", "normal");
+    doc.setTextColor(160, 170, 185);
+    doc.text(`Made with ${COMPANY_NAME} · Digital Invoice Solutions`, pageW / 2, pageH - 10, { align: "center" });
 
     doc.save(`${invoice.invoiceNumber}.pdf`);
   }, [invoice, total]);
 
+  // ── ON-SCREEN PREVIEW ──────────────────────────────────────────
+  const invoiceDate = new Date(invoice.createdAt).toLocaleDateString("en-GB", {
+    day: "numeric", month: "long", year: "numeric",
+  });
+  const dueDate = new Date(invoice.createdAt);
+  dueDate.setDate(dueDate.getDate() + 30);
+
   return (
     <div className="space-y-4">
+      {/* Toolbar */}
       <div className="flex items-center justify-between gap-2 flex-wrap">
         <div className="flex items-center gap-3">
           <Button variant="ghost" size="icon" onClick={onBack} data-testid="button-back-to-editor">
@@ -121,7 +190,7 @@ export function InvoicePreview({ invoice, onBack, onNewScan }: InvoicePreviewPro
             <h2 className="text-xl font-semibold" data-testid="text-preview-title">Invoice Preview</h2>
             <p className="text-sm text-muted-foreground">
               <span className="font-mono font-medium">{invoice.invoiceNumber}</span>
-              {" "} &middot; {invoice.clientName}
+              {" "}&middot; {invoice.clientName}
             </p>
           </div>
         </div>
@@ -132,83 +201,123 @@ export function InvoicePreview({ invoice, onBack, onNewScan }: InvoicePreviewPro
           </Button>
           <Button onClick={generatePDF} data-testid="button-generate-pdf">
             <Download className="w-4 h-4 mr-2" />
-            Generate PDF
+            Download PDF
           </Button>
         </div>
       </div>
 
-      <Card className="p-6 max-w-3xl mx-auto">
-        <div className="space-y-6">
-          <div className="flex items-start justify-between gap-4">
-            <div>
-              <div className="flex items-center gap-2 mb-1">
-                <FileText className="w-5 h-5 text-primary" />
-                <h3 className="text-lg font-bold">INVOICE</h3>
+      {/* Paper-style invoice card */}
+      <Card className="p-8 max-w-2xl mx-auto shadow-md bg-white dark:bg-card">
+        {/* Header */}
+        <div className="flex items-start justify-between mb-6">
+          {/* Left: company */}
+          <div>
+            <div className="flex items-center gap-2 mb-1">
+              <div className="w-7 h-7 rounded bg-primary flex items-center justify-center flex-shrink-0">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                  <rect x="2" y="3" width="10" height="1.8" rx="0.5" fill="white"/>
+                  <rect x="2" y="6.2" width="10" height="1.8" rx="0.5" fill="white"/>
+                  <rect x="2" y="9.2" width="6" height="1.5" rx="0.5" fill="white"/>
+                </svg>
               </div>
-              <p className="font-mono text-sm text-muted-foreground">{invoice.invoiceNumber}</p>
+              <span className="text-base font-bold text-foreground">{COMPANY_NAME}</span>
             </div>
-            <div className="text-right">
-              <Badge variant="secondary" data-testid="badge-status">{invoice.status}</Badge>
-              <p className="text-xs text-muted-foreground mt-1">
-                {new Date(invoice.createdAt).toLocaleDateString("en-GB", {
-                  day: "2-digit",
-                  month: "short",
-                  year: "numeric",
-                })}
+            <p className="text-xs text-muted-foreground">{COMPANY_CITY}</p>
+            <p className="text-xs text-muted-foreground">{COMPANY_PHONE}</p>
+          </div>
+          {/* Right: invoice title */}
+          <div className="text-right">
+            <p className="text-2xl font-bold text-foreground tracking-tight">
+              INVOICE {invoice.invoiceNumber.replace("INV-", "")}
+            </p>
+          </div>
+        </div>
+
+        <hr className="border-border mb-5" />
+
+        {/* Billing + invoice meta */}
+        <div className="grid grid-cols-2 gap-6 mb-6">
+          <div>
+            <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground mb-1.5">Billed To</p>
+            <p className="text-sm font-bold text-foreground">{invoice.clientName}</p>
+            <p className="text-xs text-muted-foreground leading-relaxed">{invoice.clientAddress}</p>
+          </div>
+          <div className="space-y-2">
+            <div>
+              <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">Invoice Number</p>
+              <p className="text-sm font-semibold text-foreground font-mono">{invoice.invoiceNumber}</p>
+            </div>
+            <div>
+              <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">Date Issued</p>
+              <p className="text-xs text-muted-foreground">{invoiceDate}</p>
+            </div>
+            <div>
+              <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">Due Date</p>
+              <p className="text-xs text-muted-foreground">
+                {dueDate.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })}
               </p>
             </div>
           </div>
+        </div>
 
-          <div className="grid grid-cols-2 gap-6">
-            <div>
-              <p className="text-xs text-muted-foreground mb-1 uppercase tracking-wider">Bill To</p>
-              <p className="font-medium text-sm">{invoice.clientName}</p>
-              <p className="text-sm text-muted-foreground">{invoice.clientAddress}</p>
-            </div>
-            <div className="text-right">
-              <p className="text-xs text-muted-foreground mb-1 uppercase tracking-wider">From</p>
-              <p className="font-medium text-sm">Digitizer</p>
-              <p className="text-sm text-muted-foreground">Islamabad, Pakistan</p>
-            </div>
-          </div>
-
-          <div className="border rounded-md">
-            <table className="w-full" data-testid="table-preview-items">
-              <thead>
-                <tr className="bg-muted/30 border-b">
-                  <th className="text-left text-xs font-medium text-muted-foreground px-4 py-2.5 w-8">#</th>
-                  <th className="text-left text-xs font-medium text-muted-foreground px-4 py-2.5">Description</th>
-                  <th className="text-right text-xs font-medium text-muted-foreground px-4 py-2.5 w-16">Qty</th>
-                  <th className="text-right text-xs font-medium text-muted-foreground px-4 py-2.5 w-24">Rate</th>
-                  <th className="text-right text-xs font-medium text-muted-foreground px-4 py-2.5 w-28">Amount</th>
+        {/* Items table */}
+        <div className="border border-border rounded-sm overflow-hidden mb-5">
+          <table className="w-full" data-testid="table-preview-items">
+            <thead>
+              <tr className="bg-muted/40 border-b border-border">
+                <th className="text-left text-[10px] font-semibold uppercase tracking-wider text-muted-foreground px-4 py-2.5">
+                  Description
+                </th>
+                <th className="text-right text-[10px] font-semibold uppercase tracking-wider text-muted-foreground px-4 py-2.5 w-24">
+                  Rate
+                </th>
+                <th className="text-right text-[10px] font-semibold uppercase tracking-wider text-muted-foreground px-4 py-2.5 w-28">
+                  Amount
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {invoice.items.map((item, i) => (
+                <tr
+                  key={item.id}
+                  className="border-b border-border/60 last:border-b-0"
+                  data-testid={`row-preview-${i}`}
+                >
+                  <td className="px-4 py-2.5 text-sm font-mono font-medium text-foreground">
+                    {item.description}
+                  </td>
+                  <td className="px-4 py-2.5 text-sm text-right font-mono text-muted-foreground">
+                    {item.rate.toFixed(2)}
+                  </td>
+                  <td className="px-4 py-2.5 text-sm text-right font-mono font-semibold text-foreground">
+                    {(item.amount ?? item.rate).toFixed(2)}
+                  </td>
                 </tr>
-              </thead>
-              <tbody>
-                {invoice.items.map((item, i) => (
-                  <tr key={item.id} className="border-b last:border-b-0" data-testid={`row-preview-${i}`}>
-                    <td className="px-4 py-2.5 text-sm text-muted-foreground">{i + 1}</td>
-                    <td className="px-4 py-2.5 text-sm font-mono font-medium">{item.description}</td>
-                    <td className="px-4 py-2.5 text-sm text-right">{item.quantity}</td>
-                    <td className="px-4 py-2.5 text-sm text-right font-mono">{item.rate.toFixed(2)}</td>
-                    <td className="px-4 py-2.5 text-sm text-right font-mono font-medium">
-                      {(item.quantity * item.rate).toFixed(2)}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+              ))}
+            </tbody>
+          </table>
+        </div>
 
-          <div className="flex justify-end">
-            <div className="bg-muted/30 rounded-md px-5 py-3 min-w-[180px]">
-              <div className="flex items-center justify-between gap-4">
-                <span className="text-sm text-muted-foreground">Total {invoice.currency}</span>
-                <span className="text-xl font-bold font-mono" data-testid="text-preview-total">
-                  {total.toFixed(2)}
-                </span>
-              </div>
+        {/* Subtotal block */}
+        <div className="flex justify-end">
+          <div className="min-w-[200px] border-t border-border pt-3 space-y-1">
+            <div className="flex items-center justify-between gap-8">
+              <span className="text-sm text-muted-foreground">SubTotal:</span>
+              <span className="text-sm font-semibold font-mono" data-testid="text-preview-total">
+                {total.toFixed(2)}
+              </span>
+            </div>
+            <div className="flex justify-end">
+              <span className="text-xs text-muted-foreground">AED</span>
             </div>
           </div>
+        </div>
+
+        {/* Footer */}
+        <div className="mt-8 pt-4 border-t border-border/50">
+          <p className="text-[10px] text-center text-muted-foreground/60">
+            Made with {COMPANY_NAME} &middot; Digital Invoice Solutions
+          </p>
         </div>
       </Card>
     </div>
