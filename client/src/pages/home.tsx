@@ -29,10 +29,7 @@ export default function Home() {
 
   const extractMutation = useMutation({
     mutationFn: async (formData: FormData) => {
-      const res = await fetch("/api/extract", {
-        method: "POST",
-        body: formData,
-      });
+      const res = await fetch("/api/extract", { method: "POST", body: formData });
       if (!res.ok) throw new Error("Failed to extract data");
       return res.json();
     },
@@ -71,23 +68,14 @@ export default function Home() {
       setView("preview");
       queryClient.invalidateQueries({ queryKey: ["/api/invoices"] });
       queryClient.invalidateQueries({ queryKey: ["/api/invoice-number"] });
-      toast({
-        title: "Invoice saved",
-        description: `Invoice ${data.invoiceNumber} has been created.`,
-      });
+      toast({ title: "Invoice saved", description: `${data.invoiceNumber} created.` });
     },
     onError: () => {
-      toast({
-        title: "Save failed",
-        description: "Could not save the invoice. Please try again.",
-        variant: "destructive",
-      });
+      toast({ title: "Save failed", description: "Could not save the invoice.", variant: "destructive" });
     },
   });
 
-  const handleImageUpload = (formData: FormData) => {
-    extractMutation.mutate(formData);
-  };
+  const handleImageUpload = (formData: FormData) => extractMutation.mutate(formData);
 
   const handleSaveInvoice = (items: ExtractedItem[], grandTotal: number) => {
     saveMutation.mutate({ items, totalAmount: grandTotal });
@@ -105,78 +93,107 @@ export default function Home() {
     }
   };
 
+  const goToUpload = () => { setView("upload"); setExtractedItems([]); setCurrentInvoice(null); };
+
   return (
     <div className="min-h-screen bg-background">
-      <header className="sticky top-0 z-50 border-b bg-background/80 backdrop-blur-md">
-        <div className="mx-auto max-w-6xl flex items-center justify-between gap-2 px-4 py-3">
-          <div className="flex items-center gap-2.5">
-            <div className="flex items-center justify-center w-9 h-9 rounded-md bg-primary">
-              <svg width="18" height="18" viewBox="0 0 18 18" fill="none" className="text-primary-foreground">
-                <rect x="2" y="3.5" width="14" height="2.2" rx="0.8" fill="currentColor"/>
-                <rect x="2" y="7.9" width="14" height="2.2" rx="0.8" fill="currentColor"/>
-                <rect x="2" y="12.3" width="9" height="2" rx="0.8" fill="currentColor"/>
+      {/* ── Header ── */}
+      <header className="sticky top-0 z-50 border-b border-border bg-card/90 backdrop-blur-md animate-slide-down">
+        <div className="mx-auto max-w-5xl flex items-center justify-between gap-2 px-5 py-0 h-14">
+          {/* Logo */}
+          <div className="flex items-center gap-3">
+            <div className="flex items-center justify-center w-8 h-8 rounded-md bg-primary">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <rect x="2" y="3.5" width="12" height="2" rx="0.75" fill="white"/>
+                <rect x="2" y="7" width="12" height="2" rx="0.75" fill="white"/>
+                <rect x="2" y="10.5" width="7.5" height="1.8" rx="0.75" fill="white"/>
               </svg>
             </div>
             <div>
-              <h1 className="text-lg font-bold leading-tight" data-testid="text-app-title">DigiBill</h1>
-              <p className="text-[10px] text-muted-foreground leading-tight">Digital Invoice Solutions</p>
+              <h1
+                className="text-[15px] font-bold leading-tight tracking-tight text-foreground"
+                data-testid="text-app-title"
+              >
+                DigiBill
+              </h1>
+              <p className="text-[10px] font-label uppercase tracking-widest text-muted-foreground leading-tight">
+                Digital Invoice Solutions
+              </p>
             </div>
           </div>
-          <div className="flex items-center gap-1">
+
+          {/* Nav */}
+          <nav className="flex items-center gap-1">
             <Button
-              variant={view === "upload" ? "secondary" : "ghost"}
+              variant={view === "upload" || view === "editor" || view === "preview" ? "ghost" : "ghost"}
               size="sm"
-              onClick={() => { setView("upload"); setExtractedItems([]); setCurrentInvoice(null); }}
+              onClick={goToUpload}
+              className={`text-xs font-label uppercase tracking-wider transition-all ${
+                view !== "history"
+                  ? "text-primary border-b-2 border-primary rounded-none pb-[2px]"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
               data-testid="button-new-scan"
             >
-              <ScanLine className="w-4 h-4 mr-1" />
+              <ScanLine className="w-3.5 h-3.5 mr-1.5" />
               New Scan
             </Button>
             <Button
-              variant={view === "history" ? "secondary" : "ghost"}
+              variant="ghost"
               size="sm"
               onClick={() => setView("history")}
+              className={`text-xs font-label uppercase tracking-wider transition-all ${
+                view === "history"
+                  ? "text-primary border-b-2 border-primary rounded-none pb-[2px]"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
               data-testid="button-history"
             >
-              <History className="w-4 h-4 mr-1" />
+              <History className="w-3.5 h-3.5 mr-1.5" />
               History
             </Button>
-            <ThemeToggle />
-          </div>
+            <div className="ml-2 pl-2 border-l border-border">
+              <ThemeToggle />
+            </div>
+          </nav>
         </div>
       </header>
 
-      <main className="mx-auto max-w-6xl px-4 py-6">
+      {/* ── Main ── */}
+      <main className="mx-auto max-w-5xl px-5 py-8">
         {view === "upload" && (
-          <ImageUploader
-            onUpload={handleImageUpload}
-            isLoading={extractMutation.isPending}
-          />
+          <div className="animate-slide-up">
+            <ImageUploader onUpload={handleImageUpload} isLoading={extractMutation.isPending} />
+          </div>
         )}
 
         {view === "editor" && (
-          <InvoiceEditor
-            items={extractedItems}
-            invoiceNumber={currentInvNum}
-            grandTotal={extractedGrandTotal}
-            onSave={handleSaveInvoice}
-            onBack={() => setView("upload")}
-            isSaving={saveMutation.isPending}
-          />
+          <div className="animate-slide-in-right">
+            <InvoiceEditor
+              items={extractedItems}
+              invoiceNumber={currentInvNum}
+              grandTotal={extractedGrandTotal}
+              onSave={handleSaveInvoice}
+              onBack={() => setView("upload")}
+              isSaving={saveMutation.isPending}
+            />
+          </div>
         )}
 
         {view === "preview" && currentInvoice && (
-          <InvoicePreview
-            invoice={currentInvoice}
-            onBack={() => setView("editor")}
-            onNewScan={() => { setView("upload"); setExtractedItems([]); setCurrentInvoice(null); }}
-          />
+          <div className="animate-slide-in-right">
+            <InvoicePreview
+              invoice={currentInvoice}
+              onBack={() => setView("editor")}
+              onNewScan={goToUpload}
+            />
+          </div>
         )}
 
         {view === "history" && (
-          <InvoiceHistory
-            onViewInvoice={handleViewInvoice}
-          />
+          <div className="animate-slide-up">
+            <InvoiceHistory onViewInvoice={handleViewInvoice} />
+          </div>
         )}
       </main>
     </div>

@@ -1,0 +1,255 @@
+<!DOCTYPE html><html class="light" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Invoice - ProInvoice</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Courier+Prime&amp;family=Hanken+Grotesk:wght@400;600;700;800&amp;family=Inter:wght@600&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "outline-variant": "#c4c7c7",
+                        "surface-container-lowest": "#ffffff",
+                        "background": "#f8f9fa",
+                        "secondary": "#835500",
+                        "surface-tint": "#5f5e5e",
+                        "tertiary-fixed-dim": "#c0c7d6",
+                        "on-surface": "#191c1d",
+                        "inverse-on-surface": "#f0f1f2",
+                        "on-error-container": "#93000a",
+                        "surface-container-highest": "#e1e3e4",
+                        "secondary-fixed-dim": "#ffb955",
+                        "secondary-container": "#feae2c",
+                        "surface-bright": "#f8f9fa",
+                        "on-secondary-fixed": "#291800",
+                        "surface-container": "#edeeef",
+                        "on-primary-fixed": "#1c1b1b",
+                        "on-surface-variant": "#444748",
+                        "tertiary-fixed": "#dce2f3",
+                        "inverse-primary": "#c8c6c5",
+                        "on-background": "#191c1d",
+                        "on-tertiary-fixed": "#151c27",
+                        "error": "#ba1a1a",
+                        "inverse-surface": "#2e3132",
+                        "on-primary-fixed-variant": "#474746",
+                        "on-tertiary-fixed-variant": "#404754",
+                        "tertiary": "#000000",
+                        "tertiary-container": "#151c27",
+                        "error-container": "#ffdad6",
+                        "surface-dim": "#d9dadb",
+                        "on-error": "#ffffff",
+                        "primary-container": "#1c1b1b",
+                        "on-secondary-container": "#6b4500",
+                        "on-primary": "#ffffff",
+                        "outline": "#747878",
+                        "on-tertiary-container": "#7d8492",
+                        "on-secondary": "#ffffff",
+                        "surface-container-low": "#f3f4f5",
+                        "on-secondary-fixed-variant": "#633f00",
+                        "primary-fixed-dim": "#c8c6c5",
+                        "on-tertiary": "#ffffff",
+                        "primary": "#000000",
+                        "surface-variant": "#e1e3e4",
+                        "surface-container-high": "#e7e8e9",
+                        "primary-fixed": "#e5e2e1",
+                        "secondary-fixed": "#ffddb4",
+                        "surface": "#f8f9fa",
+                        "on-primary-container": "#858383"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "stack-sm": "0.5rem",
+                        "stack-md": "1rem",
+                        "stack-lg": "2rem",
+                        "margin-desktop": "2.5rem",
+                        "gutter": "1.5rem",
+                        "margin-mobile": "1rem",
+                        "container-max": "1200px"
+                    },
+                    "fontFamily": {
+                        "body-md": ["Hanken Grotesk"],
+                        "body-lg": ["Hanken Grotesk"],
+                        "headline-lg-mobile": ["Hanken Grotesk"],
+                        "headline-md": ["Hanken Grotesk"],
+                        "display": ["Hanken Grotesk"],
+                        "headline-lg": ["Hanken Grotesk"],
+                        "label-md": ["Inter"],
+                        "data-mono": ["Courier Prime"]
+                    },
+                    "fontSize": {
+                        "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "32px", "fontWeight": "700" }],
+                        "headline-md": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "display": ["48px", { "lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+                        "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "data-mono": ["14px", { "lineHeight": "20px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body-md antialiased min-h-screen flex flex-col">
+<!-- TopNavBar -->
+<header class="bg-surface border-b border-outline-variant w-full">
+<div class="flex justify-between items-center w-full px-margin-desktop max-w-container-max mx-auto h-16">
+<div class="flex items-center gap-gutter">
+<a class="text-headline-md font-headline-md font-bold text-primary" href="#">ProInvoice</a>
+<nav class="hidden md:flex gap-gutter">
+<a class="text-primary border-b-2 border-primary pb-1 font-body-md" href="#">Invoices</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors font-body-md cursor-pointer transition-opacity active:opacity-70" href="#">Clients</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors font-body-md cursor-pointer transition-opacity active:opacity-70" href="#">Reports</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors font-body-md cursor-pointer transition-opacity active:opacity-70" href="#">Settings</a>
+</nav>
+</div>
+<div class="flex items-center gap-stack-md">
+<button class="hidden md:flex items-center justify-center px-4 py-2 border border-outline rounded text-primary font-label-md text-label-md hover:bg-surface-variant transition-colors">
+<span class="material-symbols-outlined mr-2" style="font-size: 18px;">download</span> Export
+                </button>
+<button class="flex items-center justify-center px-4 py-2 bg-primary text-on-primary rounded font-label-md text-label-md hover:bg-primary-container transition-colors">
+<span class="material-symbols-outlined mr-2" style="font-size: 18px;">add</span> Create Invoice
+                </button>
+<div class="w-8 h-8 rounded-full bg-surface-variant overflow-hidden ml-stack-sm border border-outline-variant">
+<img alt="User Profile" class="w-full h-full object-cover" data-alt="A small, professional portrait photo of a user for a profile avatar. The photo is well-lit, sharp, and has a neutral background to fit a clean, corporate UI design context." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDKUe-hqHe4UUZybFZEIGJ3-iHtZ3q-MiNPy6GbayZeg_A7mJb83NVl-9L_uxc_8jNCGiG59BZ42bn4_zt6PrBm4EBYXce1_q6e8I6BY8PBz5KNJD_fMACcEI1x-D-9GavjM9fROYgDebDFfLr7l879Et7AbzbZpt7aO5wVtNn1-s121a2jTO-FWXEhDZc8ZZdbyxhOz__I1uyTTRvuQIHJiyvteTd7fM2mhsCbFfZ3KAGlJGqcIodT">
+</div>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-grow flex justify-center py-stack-lg px-margin-mobile md:px-margin-desktop">
+<!-- The "Sheet" -->
+<div class="bg-surface-container-lowest w-full max-w-[800px] shadow-sm border border-outline-variant rounded p-8 md:p-12 relative overflow-hidden">
+<!-- Header Section -->
+<div class="flex flex-col md:flex-row justify-between items-start mb-12 border-b-2 border-outline-variant pb-8">
+<div class="flex flex-col gap-4">
+<div class="w-32 h-16 relative">
+<img alt="Safi Digitizer Logo" class="w-24 h-auto object-contain object-left" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBab2ULEQ_2tiRinJoXa8FKwFTX9p1Dn0OfwRxXPI_vZDyrT7mgH9jwTmL3tL4JaQOyNGwpEQ1MwNXzAkd9ZjihUKfSBueaPB3FeJKYMlCsnxuBvXYahUCYevt2pgg0W2O_faZjbxj7LPvntJjdDULLLDG2FNH2kd8kVmjVWmRUINvcNS-ss5le6cLXvLK89K9XLT2Y64c7NDwnt8XR2wdoM4P7vjOvqci9JcuYF0M9MlDj5v1ucq-0oho92Au41g_8wQ">
+</div>
+<div class="text-body-md text-on-surface-variant">
+<p class="font-bold text-on-surface">Safiullah</p>
+<p class="">Islamabad Pakistan</p>
+<p class="">+923490896977</p>
+<p class="">Safi.embdr@gmail.com</p>
+</div>
+</div>
+<div class="text-right mt-6 md:mt-0">
+<h1 class="text-display font-display text-primary uppercase tracking-wider">Invoice-32</h1>
+<div class="mt-6 flex flex-col gap-2 text-right items-end"><div class="flex gap-4 justify-end"><span class="text-label-md font-label-md text-on-surface-variant uppercase">Bill To:</span><div class="text-body-md text-on-surface text-right"><p class="font-bold">Art Fashion LLC</p><p class="">Abu Dhabi UAE</p></div></div><div class="flex gap-8 justify-end"><span class="text-label-md font-label-md text-on-surface-variant uppercase self-center">Invoice Number</span><span class="text-data-mono font-data-mono">000032</span></div><div class="flex gap-8 justify-end"><span class="text-label-md font-label-md text-on-surface-variant uppercase self-center">Date</span><span class="text-data-mono font-data-mono">03/05/2024</span></div><div class="flex gap-8 justify-end"><span class="text-label-md font-label-md text-on-surface-variant uppercase self-center">Due Date</span><span class="text-data-mono font-data-mono text-outline">-</span></div></div></div>
+</div>
+<!-- Details Section -->
+<!-- Table Section -->
+<div class="mb-12">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="border-b-2 border-outline-variant bg-tertiary-fixed">
+<th class="py-3 px-4 text-label-md font-label-md text-on-surface-variant uppercase">Description</th>
+<th class="py-3 px-4 text-label-md font-label-md text-on-surface-variant uppercase w-24">Quantity</th>
+<th class="py-3 px-4 text-label-md font-label-md text-on-surface-variant uppercase w-32 text-right">Unit Price</th>
+<th class="py-3 px-4 text-label-md font-label-md text-on-surface-variant uppercase w-32 text-right">Amount</th>
+</tr>
+</thead>
+<tbody class="text-body-md">
+<tr class="border-b border-outline-variant hover:bg-surface transition-colors">
+<td class="py-3 px-4">Mod No. J93</td>
+<td class="py-3 px-4">1</td>
+<td class="py-3 px-4 text-right text-data-mono font-data-mono">60.00 AED</td>
+<td class="py-3 px-4 text-right text-data-mono font-data-mono">60.00 AED</td>
+</tr>
+<tr class="border-b border-outline-variant hover:bg-surface transition-colors">
+<td class="py-3 px-4">Mod No. J94</td>
+<td class="py-3 px-4">1</td>
+<td class="py-3 px-4 text-right text-data-mono font-data-mono">60.00 AED</td>
+<td class="py-3 px-4 text-right text-data-mono font-data-mono">60.00 AED</td>
+</tr>
+<tr class="border-b border-outline-variant hover:bg-surface transition-colors">
+<td class="py-3 px-4">LOGO Naif Al Maisry</td>
+<td class="py-3 px-4">1</td>
+<td class="py-3 px-4 text-right text-data-mono font-data-mono">15.00 AED</td>
+<td class="py-3 px-4 text-right text-data-mono font-data-mono">15.00 AED</td>
+</tr>
+<tr class="border-b border-outline-variant hover:bg-surface transition-colors">
+<td class="py-3 px-4">Logo 10264</td>
+<td class="py-3 px-4">1</td>
+<td class="py-3 px-4 text-right text-data-mono font-data-mono">20.00 AED</td>
+<td class="py-3 px-4 text-right text-data-mono font-data-mono">20.00 AED</td>
+</tr>
+<tr class="border-b border-outline-variant hover:bg-surface transition-colors">
+<td class="py-3 px-4">Mod No. 2170</td>
+<td class="py-3 px-4">1</td>
+<td class="py-3 px-4 text-right text-data-mono font-data-mono">50.00 AED</td>
+<td class="py-3 px-4 text-right text-data-mono font-data-mono">50.00 AED</td>
+</tr>
+<tr class="border-b border-outline-variant hover:bg-surface transition-colors">
+<td class="py-3 px-4">Mod No. 21</td>
+<td class="py-3 px-4">1</td>
+<td class="py-3 px-4 text-right text-data-mono font-data-mono">25.00 AED</td>
+<td class="py-3 px-4 text-right text-data-mono font-data-mono">25.00 AED</td>
+</tr>
+<tr class="border-b border-outline-variant hover:bg-surface transition-colors">
+<td class="py-3 px-4">Mod No. 30893</td>
+<td class="py-3 px-4">1</td>
+<td class="py-3 px-4 text-right text-data-mono font-data-mono">40.00 AED</td>
+<td class="py-3 px-4 text-right text-data-mono font-data-mono">40.00 AED</td>
+</tr>
+<tr class="border-b border-outline-variant hover:bg-surface transition-colors">
+<td class="py-3 px-4">Mod No. 30669</td>
+<td class="py-3 px-4">1</td>
+<td class="py-3 px-4 text-right text-data-mono font-data-mono">60.00 AED</td>
+<td class="py-3 px-4 text-right text-data-mono font-data-mono">60.00 AED</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Totals Section -->
+<div class="flex justify-end">
+<div class="w-full max-w-sm">
+<div class="flex justify-between items-center py-4 border-b-2 border-secondary-container">
+<span class="text-headline-md font-headline-md text-primary">Total Due</span>
+<span class="text-headline-md font-headline-md text-primary font-data-mono">330.00 AED</span>
+</div>
+</div>
+</div>
+<!-- Action Area (Floating outside print logic, but part of UI) -->
+<div class="mt-16 flex justify-end gap-4 print:hidden">
+<button class="px-6 py-2 border border-outline rounded text-primary font-label-md text-label-md hover:bg-surface-variant transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined">print</span> Print
+                </button>
+<button class="px-6 py-2 bg-secondary-container text-on-secondary-container rounded font-label-md text-label-md hover:bg-secondary-fixed transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined">send</span> Send Invoice
+                </button>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="bg-surface-container-lowest border-t border-outline-variant w-full">
+<div class="flex flex-col md:flex-row justify-between items-center w-full px-margin-desktop py-stack-md max-w-container-max mx-auto">
+<div class="text-on-surface-variant font-label-md text-label-md mb-4 md:mb-0">
+                © 2024 ProInvoice Systems Inc. All rights reserved.
+            </div>
+<div class="flex gap-gutter">
+<a class="text-on-surface-variant font-label-md text-label-md hover:text-primary transition-colors duration-200" href="#">Privacy Policy</a>
+<a class="text-on-surface-variant font-label-md text-label-md hover:text-primary transition-colors duration-200" href="#">Terms of Service</a>
+<a class="text-on-surface-variant font-label-md text-label-md hover:text-primary transition-colors duration-200" href="#">Security</a>
+<a class="text-on-surface-variant font-label-md text-label-md hover:text-primary transition-colors duration-200" href="#">Status</a>
+</div>
+</div>
+</footer>
+
+
+</body></html>
