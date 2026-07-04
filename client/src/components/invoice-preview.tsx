@@ -48,18 +48,34 @@ export function InvoicePreview({ invoice, onBack, onNewScan }: InvoicePreviewPro
     const DARK   = [25, 30, 42]   as [number,number,number];
     const LGRAY  = [210, 215, 225] as [number,number,number];
 
-    // ── LOGO IMAGE (top-left) ──
+    // ── LOGO IMAGE (top-left) — preserve aspect ratio, don't stretch ──
+    const maxLogoW = 22;
+    const maxLogoH = 22;
+    let logoW = maxLogoW;
+    let logoH = maxLogoH;
     try {
       const logoBase64 = await imgToBase64(logoSrc);
-      doc.addImage(logoBase64, "PNG", L, 10, 22, 22);
+      const props = doc.getImageProperties(logoBase64);
+      const ratio = props.width / props.height;
+      if (ratio >= 1) {
+        logoW = maxLogoW;
+        logoH = maxLogoW / ratio;
+      } else {
+        logoH = maxLogoH;
+        logoW = maxLogoH * ratio;
+      }
+      // vertically center the logo within the max box so text baseline aligns consistently
+      const logoY = 10 + (maxLogoH - logoH) / 2;
+      doc.addImage(logoBase64, "PNG", L, logoY, logoW, logoH);
     } catch {
       // fallback square if image fails
       doc.setFillColor(...NAVY);
-      doc.roundedRect(L, 10, 22, 22, 2, 2, "F");
+      doc.roundedRect(L, 10, maxLogoW, maxLogoH, 2, 2, "F");
+      logoW = maxLogoW;
     }
 
-    // Company info (right of logo)
-    const infoX = L + 26;
+    // Company info (right of logo) — offset based on actual logo width
+    const infoX = L + logoW + 5;
     doc.setFont("helvetica", "bold");
     doc.setFontSize(11);
     doc.setTextColor(...NAVY);
