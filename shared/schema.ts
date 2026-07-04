@@ -1,45 +1,51 @@
-import { pgTable, serial, text, integer, real, timestamp, varchar } from "drizzle-orm/pg-core";
-import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
-import { sql } from "drizzle-orm";
 
 export * from "./models/chat";
 
-export const invoices = pgTable("invoices", {
-  id: serial("id").primaryKey(),
-  invoiceNumber: text("invoice_number").notNull(),
-  clientName: text("client_name").notNull().default("ART FASHION LLC"),
-  clientAddress: text("client_address").notNull().default("Abu Dhabi, UAE"),
-  currency: text("currency").notNull().default("AED"),
-  totalAmount: real("total_amount").notNull().default(0),
-  status: text("status").notNull().default("draft"),
-  imageUrl: text("image_url"),
-  createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`).notNull(),
+export const insertInvoiceSchema = z.object({
+  invoiceNumber: z.string(),
+  clientName: z.string().default("ART FASHION LLC"),
+  clientAddress: z.string().default("Abu Dhabi, UAE"),
+  currency: z.string().default("AED"),
+  totalAmount: z.number().default(0),
+  status: z.string().default("draft"),
+  imageUrl: z.string().nullable().optional(),
 });
 
-export const invoiceItems = pgTable("invoice_items", {
-  id: serial("id").primaryKey(),
-  invoiceId: integer("invoice_id").notNull().references(() => invoices.id, { onDelete: "cascade" }),
-  description: text("description").notNull(),
-  quantity: real("quantity").notNull(),
-  rate: real("rate").notNull(),
-  amount: real("amount").notNull(),
-  isUncertain: integer("is_uncertain").notNull().default(0),
-});
-
-export const insertInvoiceSchema = createInsertSchema(invoices).omit({
-  id: true,
-  createdAt: true,
-});
-
-export const insertInvoiceItemSchema = createInsertSchema(invoiceItems).omit({
-  id: true,
-});
-
-export type Invoice = typeof invoices.$inferSelect;
 export type InsertInvoice = z.infer<typeof insertInvoiceSchema>;
-export type InvoiceItem = typeof invoiceItems.$inferSelect;
+
+export type Invoice = {
+  id: string;
+  invoiceNumber: string;
+  clientName: string;
+  clientAddress: string;
+  currency: string;
+  totalAmount: number;
+  status: string;
+  imageUrl: string | null;
+  createdAt: string;
+};
+
+export const insertInvoiceItemSchema = z.object({
+  invoiceId: z.string(),
+  description: z.string(),
+  quantity: z.number(),
+  rate: z.number(),
+  amount: z.number(),
+  isUncertain: z.number().default(0),
+});
+
 export type InsertInvoiceItem = z.infer<typeof insertInvoiceItemSchema>;
+
+export type InvoiceItem = {
+  id: string;
+  invoiceId: string;
+  description: string;
+  quantity: number;
+  rate: number;
+  amount: number;
+  isUncertain: number;
+};
 
 export const extractedItemSchema = z.object({
   description: z.string(),

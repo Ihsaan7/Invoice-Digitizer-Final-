@@ -1,6 +1,8 @@
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import { ArrowLeft, Download, Plus, AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import type { Invoice, InvoiceItem } from "@shared/schema";
 import logoSrc from "@assets/LogoSafi-Digitizer_1782979058152.png";
 
@@ -26,8 +28,20 @@ async function imgToBase64(src: string): Promise<string> {
   });
 }
 
+function toDateInputValue(d: string | Date): string {
+  const date = new Date(d);
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
+}
+
 export function InvoicePreview({ invoice, onBack, onNewScan }: InvoicePreviewProps) {
   const total = invoice.items.reduce((sum, item) => sum + (item.amount ?? item.rate), 0);
+
+  // Editable invoice number & date — user can override before printing to PDF
+  const [editedInvoiceNumber, setEditedInvoiceNumber] = useState(invoice.invoiceNumber);
+  const [editedDate, setEditedDate] = useState(toDateInputValue(invoice.createdAt));
 
   /* ── PDF GENERATION ── */
   const generatePDF = useCallback(async () => {
@@ -89,7 +103,7 @@ export function InvoicePreview({ invoice, onBack, onNewScan }: InvoicePreviewPro
     doc.text(CO_EMAIL, infoX, 31.5);
 
     // ── INVOICE TITLE — top-right, single line "INVOICE #44" ──
-    const invNum = invoice.invoiceNumber.replace("INV-", "");
+    const invNum = editedInvoiceNumber.replace("INV-", "");
     doc.setFont("helvetica", "bold");
     doc.setFontSize(9);
     doc.setTextColor(...TEAL);
@@ -135,7 +149,7 @@ export function InvoicePreview({ invoice, onBack, onNewScan }: InvoicePreviewPro
     doc.setFont("helvetica", "bold");
     doc.setFontSize(10);
     doc.setTextColor(...DARK);
-    doc.text(invoice.invoiceNumber, colR, rY + 6.5);
+    doc.text(editedInvoiceNumber, colR, rY + 6.5);
 
     rY += 16;
 
@@ -147,7 +161,7 @@ export function InvoicePreview({ invoice, onBack, onNewScan }: InvoicePreviewPro
     doc.setFont("helvetica", "normal");
     doc.setFontSize(8.5);
     doc.setTextColor(...GRAY);
-    const issuedStr = new Date(invoice.createdAt).toLocaleDateString("en-GB", {
+    const issuedStr = new Date(editedDate).toLocaleDateString("en-GB", {
       day: "numeric", month: "long", year: "numeric",
     });
     doc.text(issuedStr, colR, rY + 6.5);
@@ -234,12 +248,12 @@ export function InvoicePreview({ invoice, onBack, onNewScan }: InvoicePreviewPro
       { align: "center" }
     );
 
-    doc.save(`${invoice.invoiceNumber}.pdf`);
-  }, [invoice, total]);
+    doc.save(`${editedInvoiceNumber}.pdf`);
+  }, [invoice, total, editedInvoiceNumber, editedDate]);
 
   /* ── ON-SCREEN PREVIEW ── */
-  const invoiceNum = invoice.invoiceNumber.replace("INV-", "");
-  const issuedDate = new Date(invoice.createdAt).toLocaleDateString("en-GB", {
+  const invoiceNum = editedInvoiceNumber.replace("INV-", "");
+  const issuedDate = new Date(editedDate).toLocaleDateString("en-GB", {
     day: "numeric", month: "long", year: "numeric",
   });
 
@@ -265,7 +279,7 @@ export function InvoicePreview({ invoice, onBack, onNewScan }: InvoicePreviewPro
               Invoice Preview
             </h2>
             <p className="text-xs font-label uppercase tracking-wider text-muted-foreground">
-              {invoice.invoiceNumber} &middot; {invoice.clientName}
+              {editedInvoiceNumber} &middot; {invoice.clientName}
             </p>
           </div>
         </div>
@@ -334,22 +348,39 @@ export function InvoicePreview({ invoice, onBack, onNewScan }: InvoicePreviewPro
                   </div>
                 </div>
 
-                {/* Invoice number */}
+                {/* Invoice number — editable */}
                 <div className="flex items-center gap-6 justify-end">
-                  <span className="text-[10px] font-label uppercase tracking-widest text-muted-foreground">
+                  <Label
+                    htmlFor="input-invoice-number"
+                    className="text-[10px] font-label uppercase tracking-widest text-muted-foreground whitespace-nowrap"
+                  >
                     Invoice Number
-                  </span>
-                  <span className="text-sm font-mono font-semibold text-foreground">
-                    {invoice.invoiceNumber}
-                  </span>
+                  </Label>
+                  <Input
+                    id="input-invoice-number"
+                    value={editedInvoiceNumber}
+                    onChange={(e) => setEditedInvoiceNumber(e.target.value)}
+                    className="h-7 w-28 text-right text-sm font-mono font-semibold px-2"
+                    data-testid="input-invoice-number"
+                  />
                 </div>
 
-                {/* Date issued */}
+                {/* Date issued — editable */}
                 <div className="flex items-center gap-6 justify-end">
-                  <span className="text-[10px] font-label uppercase tracking-widest text-muted-foreground">
+                  <Label
+                    htmlFor="input-date-issued"
+                    className="text-[10px] font-label uppercase tracking-widest text-muted-foreground whitespace-nowrap"
+                  >
                     Date Issued
-                  </span>
-                  <span className="text-sm text-muted-foreground">{issuedDate}</span>
+                  </Label>
+                  <Input
+                    id="input-date-issued"
+                    type="date"
+                    value={editedDate}
+                    onChange={(e) => setEditedDate(e.target.value)}
+                    className="h-7 w-36 text-right text-sm px-2"
+                    data-testid="input-date-issued"
+                  />
                 </div>
               </div>
             </div>

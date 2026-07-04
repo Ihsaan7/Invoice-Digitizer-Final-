@@ -1,0 +1,3 @@
+- [Mongoose ESM import gotcha](mongoose-esm-import.md) — `model`/`models` are not named exports in ESM/tsx; import default `mongoose` and destructure.
+- [Postgres→MongoDB migration pattern](postgres-to-mongo-migration.md) — swapping Drizzle/Postgres for Mongoose changes ids from int to ObjectId string; audit all `parseInt(id)` call sites.
+- [Vercel deploy for Express+Vite apps](vercel-express-vite-deploy.md) — catch-all `api/[...path].ts` wrapping the Express app avoids needing custom rewrites for API routing.

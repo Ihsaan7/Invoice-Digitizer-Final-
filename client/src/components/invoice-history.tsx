@@ -18,7 +18,7 @@ export function InvoiceHistory({ onViewInvoice }: InvoiceHistoryProps) {
   });
 
   const deleteMutation = useMutation({
-    mutationFn: async (id: number) => {
+    mutationFn: async (id: string) => {
       await apiRequest("DELETE", `/api/invoices/${id}`);
     },
     onSuccess: () => {

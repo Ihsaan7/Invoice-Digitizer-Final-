@@ -1,74 +1,113 @@
-import { type Invoice, type InsertInvoice, type InvoiceItem, type InsertInvoiceItem, invoices, invoiceItems } from "@shared/schema";
-import { db } from "./db";
-import { eq, desc } from "drizzle-orm";
+import {
+  type Invoice,
+  type InsertInvoice,
+  type InvoiceItem,
+  type InsertInvoiceItem,
+} from "@shared/schema";
+import { connectMongo } from "./mongodb";
+import { InvoiceModel, InvoiceItemModel } from "./models";
 
 export interface IStorage {
   getInvoices(): Promise<Invoice[]>;
-  getInvoice(id: number): Promise<Invoice | undefined>;
+  getInvoice(id: string): Promise<Invoice | undefined>;
   createInvoice(invoice: InsertInvoice): Promise<Invoice>;
-  updateInvoice(id: number, invoice: Partial<InsertInvoice>): Promise<Invoice | undefined>;
-  deleteInvoice(id: number): Promise<void>;
-  getInvoiceItems(invoiceId: number): Promise<InvoiceItem[]>;
+  updateInvoice(
+    id: string,
+    invoice: Partial<InsertInvoice>
+  ): Promise<Invoice | undefined>;
+  deleteInvoice(id: string): Promise<void>;
+  getInvoiceItems(invoiceId: string): Promise<InvoiceItem[]>;
   createInvoiceItem(item: InsertInvoiceItem): Promise<InvoiceItem>;
-  updateInvoiceItem(id: number, item: Partial<InsertInvoiceItem>): Promise<InvoiceItem | undefined>;
-  deleteInvoiceItem(id: number): Promise<void>;
-  deleteInvoiceItems(invoiceId: number): Promise<void>;
+  updateInvoiceItem(
+    id: string,
+    item: Partial<InsertInvoiceItem>
+  ): Promise<InvoiceItem | undefined>;
+  deleteInvoiceItem(id: string): Promise<void>;
+  deleteInvoiceItems(invoiceId: string): Promise<void>;
   getNextInvoiceNumber(): Promise<string>;
 }
 
-export class DatabaseStorage implements IStorage {
+export class MongoStorage implements IStorage {
   async getInvoices(): Promise<Invoice[]> {
-    return db.select().from(invoices).orderBy(desc(invoices.createdAt));
+    await connectMongo();
+    const docs = await InvoiceModel.find().sort({ createdAt: -1 });
+    return docs.map((d) => d.toJSON() as unknown as Invoice);
   }
 
-  async getInvoice(id: number): Promise<Invoice | undefined> {
-    const [invoice] = await db.select().from(invoices).where(eq(invoices.id, id));
-    return invoice;
+  async getInvoice(id: string): Promise<Invoice | undefined> {
+    await connectMongo();
+    try {
+      const doc = await InvoiceModel.findById(id);
+      return doc ? (doc.toJSON() as unknown as Invoice) : undefined;
+    } catch {
+      return undefined;
+    }
   }
 
   async createInvoice(invoice: InsertInvoice): Promise<Invoice> {
-    const [created] = await db.insert(invoices).values(invoice).returning();
-    return created;
+    await connectMongo();
+    const doc = await InvoiceModel.create(invoice);
+    return doc.toJSON() as unknown as Invoice;
   }
 
-  async updateInvoice(id: number, invoice: Partial<InsertInvoice>): Promise<Invoice | undefined> {
-    const [updated] = await db.update(invoices).set(invoice).where(eq(invoices.id, id)).returning();
-    return updated;
+  async updateInvoice(
+    id: string,
+    invoice: Partial<InsertInvoice>
+  ): Promise<Invoice | undefined> {
+    await connectMongo();
+    const doc = await InvoiceModel.findByIdAndUpdate(id, invoice, {
+      new: true,
+    });
+    return doc ? (doc.toJSON() as unknown as Invoice) : undefined;
   }
 
-  async deleteInvoice(id: number): Promise<void> {
-    await db.delete(invoiceItems).where(eq(invoiceItems.invoiceId, id));
-    await db.delete(invoices).where(eq(invoices.id, id));
+  async deleteInvoice(id: string): Promise<void> {
+    await connectMongo();
+    await InvoiceItemModel.deleteMany({ invoiceId: id });
+    await InvoiceModel.findByIdAndDelete(id);
   }
 
-  async getInvoiceItems(invoiceId: number): Promise<InvoiceItem[]> {
-    return db.select().from(invoiceItems).where(eq(invoiceItems.invoiceId, invoiceId));
+  async getInvoiceItems(invoiceId: string): Promise<InvoiceItem[]> {
+    await connectMongo();
+    const docs = await InvoiceItemModel.find({ invoiceId });
+    return docs.map((d) => d.toJSON() as unknown as InvoiceItem);
   }
 
   async createInvoiceItem(item: InsertInvoiceItem): Promise<InvoiceItem> {
-    const [created] = await db.insert(invoiceItems).values(item).returning();
-    return created;
+    await connectMongo();
+    const doc = await InvoiceItemModel.create(item);
+    return doc.toJSON() as unknown as InvoiceItem;
   }
 
-  async updateInvoiceItem(id: number, item: Partial<InsertInvoiceItem>): Promise<InvoiceItem | undefined> {
-    const [updated] = await db.update(invoiceItems).set(item).where(eq(invoiceItems.id, id)).returning();
-    return updated;
+  async updateInvoiceItem(
+    id: string,
+    item: Partial<InsertInvoiceItem>
+  ): Promise<InvoiceItem | undefined> {
+    await connectMongo();
+    const doc = await InvoiceItemModel.findByIdAndUpdate(id, item, {
+      new: true,
+    });
+    return doc ? (doc.toJSON() as unknown as InvoiceItem) : undefined;
   }
 
-  async deleteInvoiceItem(id: number): Promise<void> {
-    await db.delete(invoiceItems).where(eq(invoiceItems.id, id));
+  async deleteInvoiceItem(id: string): Promise<void> {
+    await connectMongo();
+    await InvoiceItemModel.findByIdAndDelete(id);
   }
 
-  async deleteInvoiceItems(invoiceId: number): Promise<void> {
-    await db.delete(invoiceItems).where(eq(invoiceItems.invoiceId, invoiceId));
+  async deleteInvoiceItems(invoiceId: string): Promise<void> {
+    await connectMongo();
+    await InvoiceItemModel.deleteMany({ invoiceId });
   }
 
   async getNextInvoiceNumber(): Promise<string> {
-    const allInvoices = await db.select().from(invoices).orderBy(desc(invoices.id));
-    if (allInvoices.length === 0) return "INV-39";
-    const lastNum = parseInt(allInvoices[0].invoiceNumber.replace("INV-", "")) || 38;
+    await connectMongo();
+    const last = await InvoiceModel.findOne().sort({ createdAt: -1 });
+    if (!last) return "INV-39";
+    const match = last.invoiceNumber.match(/(\d+)/);
+    const lastNum = match ? parseInt(match[1], 10) : 38;
     return `INV-${lastNum + 1}`;
   }
 }
 
-export const storage = new DatabaseStorage();
+export const storage = new MongoStorage();
