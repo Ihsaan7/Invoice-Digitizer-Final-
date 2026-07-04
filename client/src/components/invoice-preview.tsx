@@ -195,31 +195,33 @@ export function InvoicePreview({ invoice, onBack, onNewScan }: InvoicePreviewPro
 
     const finalY: number = (doc as any).lastAutoTable?.finalY ?? 160;
 
-    // ── TOTALS BLOCK (with gold accent) ──
-    const bX = R - 72;
+    // ── TOTALS BLOCK — big, bold, highlighted (main focal point) ──
+    const boxW = 82;
+    const bX = R - boxW;
     const tY = finalY + 10;
+    const boxH = 26;
 
-    doc.setDrawColor(...LGRAY);
-    doc.setLineWidth(0.4);
-    doc.line(bX, tY, R, tY);
+    // Filled highlight box behind the total
+    doc.setFillColor(245, 237, 214); // soft gold tint
+    doc.roundedRect(bX, tY, boxW, boxH, 2, 2, "F");
+    doc.setDrawColor(...GOLD);
+    doc.setLineWidth(0.6);
+    doc.roundedRect(bX, tY, boxW, boxH, 2, 2, "S");
 
-    doc.setFontSize(8.5);
-    doc.setFont("helvetica", "normal");
+    doc.setFontSize(9.5);
+    doc.setFont("helvetica", "bold");
     doc.setTextColor(...GRAY);
-    doc.text("SubTotal:", bX, tY + 8);
+    doc.text("TOTAL DUE", bX + 6, tY + 10);
 
     doc.setFont("courier", "bold");
-    doc.setFontSize(10);
+    doc.setFontSize(22);
     doc.setTextColor(...GOLD);
-    doc.text(total.toFixed(2), R, tY + 8, { align: "right" });
+    doc.text(total.toFixed(2), R - 6, tY + 20, { align: "right" });
 
-    doc.setFontSize(7.5);
+    doc.setFontSize(9);
     doc.setFont("helvetica", "bold");
     doc.setTextColor(...TEAL);
-    doc.text("AED", R, tY + 15, { align: "right" });
-
-    doc.setDrawColor(...LGRAY);
-    doc.line(bX, tY + 20, R, tY + 20);
+    doc.text("AED", bX + 6, tY + 20);
 
     // ── FOOTER ──
     doc.setFontSize(7);
