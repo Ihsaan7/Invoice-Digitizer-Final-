@@ -127,7 +127,7 @@ export async function registerRoutes(
       const base64Image = req.file.buffer.toString("base64");
       const mimeType = req.file.mimetype || "image/jpeg";
 
-      const model = genai.getGenerativeModel({ model: "gemini-1.5-flash" });
+      const model = genai.getGenerativeModel({ model: "gemini-2.0-flash-lite" });
 
       const prompt = `You are an OCR specialist that extracts data from handwritten invoice/bazaar notes.
 
