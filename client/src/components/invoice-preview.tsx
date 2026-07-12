@@ -212,8 +212,11 @@ export function InvoicePreview({ invoice, onBack, onNewScan }: InvoicePreviewPro
     // ── TOTALS BLOCK — big, bold, highlighted (main focal point) ──
     const boxW = 82;
     const bX = R - boxW;
-    const tY = finalY + 10;
     const boxH = 26;
+    const needed = boxH + 20; // space needed below table
+    const tY = (finalY + needed > pageH - 20)
+      ? (doc.addPage(), 20)  // not enough room — start fresh page
+      : finalY + 10;
 
     // Filled highlight box behind the total
     doc.setFillColor(245, 237, 214); // soft gold tint
@@ -427,32 +430,35 @@ export function InvoicePreview({ invoice, onBack, onNewScan }: InvoicePreviewPro
                   </tr>
                 ))}
               </tbody>
+              <tfoot>
+                <tr>
+                  <td colSpan={3} className="pt-2 pb-0 px-4">
+                    <div className="flex justify-end">
+                      <div
+                        className="flex items-center justify-between gap-8 px-5 py-4 rounded-xl mt-2 mb-1"
+                        style={{ background: "hsl(43 80% 93%)", border: "1.5px solid hsl(43 70% 65%)", minWidth: 220 }}
+                        data-testid="text-preview-total"
+                      >
+                        <div className="flex flex-col gap-0.5">
+                          <span className="text-[10px] font-label uppercase tracking-widest" style={{ color: "hsl(174 60% 35%)" }}>
+                            AED
+                          </span>
+                          <span className="text-[10px] font-label uppercase tracking-widest text-muted-foreground">
+                            Total Due
+                          </span>
+                        </div>
+                        <span
+                          className="text-2xl font-mono font-extrabold tabular-nums"
+                          style={{ color: "hsl(43 85% 35%)" }}
+                        >
+                          {total.toFixed(2)}
+                        </span>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              </tfoot>
             </table>
-          </div>
-
-          {/* Totals */}
-          <div className="mt-8 flex justify-end">
-            <div className="min-w-[220px] space-y-2">
-              <div className="border-t border-border pt-4 space-y-1.5">
-                <div className="flex items-center justify-between gap-10">
-                  <span className="text-sm text-muted-foreground">SubTotal:</span>
-                  <span
-                    className="text-sm font-mono font-bold tabular-nums"
-                    style={{ color: "hsl(43 85% 35%)" }}
-                    data-testid="text-preview-total"
-                  >
-                    {total.toFixed(2)}
-                  </span>
-                </div>
-                <div className="flex justify-end">
-                  <span className="text-[10px] font-label uppercase tracking-widest"
-                    style={{ color: "hsl(174 60% 35%)" }}>
-                    AED
-                  </span>
-                </div>
-              </div>
-              <div className="border-t border-border/60 pt-1" />
-            </div>
           </div>
         </div>
 
