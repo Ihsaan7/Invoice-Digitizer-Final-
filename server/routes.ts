@@ -1,12 +1,10 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import OpenAI from "openai";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 import multer from "multer";
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+const genai = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
 
 const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 10 * 1024 * 1024 } });
 
@@ -122,15 +120,16 @@ export async function registerRoutes(
         return res.status(400).json({ error: "No image uploaded" });
       }
 
+      if (!process.env.GEMINI_API_KEY) {
+        return res.status(500).json({ error: "GEMINI_API_KEY is not set. Add it in the Secrets panel." });
+      }
+
       const base64Image = req.file.buffer.toString("base64");
       const mimeType = req.file.mimetype || "image/jpeg";
 
-      const response = await openai.chat.completions.create({
-        model: "gpt-4o",
-        messages: [
-          {
-            role: "system",
-            content: `You are an OCR specialist that extracts data from handwritten invoice/bazaar notes.
+      const model = genai.getGenerativeModel({ model: "gemini-1.5-flash" });
+
+      const prompt = `You are an OCR specialist that extracts data from handwritten invoice/bazaar notes.
 
 CRITICAL RULES — follow these exactly:
 
@@ -144,7 +143,7 @@ CRITICAL RULES — follow these exactly:
 
 5. LAST NUMBER IS TOTAL: Re-emphasize — if the note has 9 items followed by a number like "540.00" or "540", that final number is the SubTotal/Grand Total. Do not list it as item 10.
 
-Return ONLY valid JSON in this exact format:
+Return ONLY valid JSON in this exact format (no markdown, no code fences):
 {
   "items": [
     { "description": "string", "rate": number, "amount": number, "isUncertain": boolean }
@@ -160,32 +159,27 @@ Example: A note with lines "MX-4495 40.00", "SIT 25.00", "45042 60.00", and then
     { "description": "45042", "rate": 60.00, "amount": 60.00, "isUncertain": false }
   ],
   "grandTotal": 125.00
-}`
-          },
-          {
-            role: "user",
-            content: [
-              {
-                type: "text",
-                text: "Extract all items from this handwritten invoice note. Remember: the LAST number is the grand total, not a line item. Return the data as JSON."
-              },
-              {
-                type: "image_url",
-                image_url: {
-                  url: `data:${mimeType};base64,${base64Image}`
-                }
-              }
-            ]
-          }
-        ],
-        response_format: { type: "json_object" },
-        max_completion_tokens: 8192,
-      });
+}
 
-      const content = response.choices[0]?.message?.content || "{}";
+Now extract all items from the attached handwritten invoice note. Remember: the LAST number is the grand total, not a line item. Return ONLY the JSON object.`;
+
+      const result = await model.generateContent([
+        prompt,
+        {
+          inlineData: {
+            mimeType: mimeType as any,
+            data: base64Image,
+          },
+        },
+      ]);
+
+      const content = result.response.text().trim();
+      // Strip markdown code fences if model wraps output
+      const cleaned = content.replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/i, "").trim();
+
       let parsed: any;
       try {
-        parsed = JSON.parse(content);
+        parsed = JSON.parse(cleaned);
       } catch {
         parsed = { items: [], grandTotal: 0 };
       }
