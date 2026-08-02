@@ -45,6 +45,7 @@ export function InvoicePreview({ invoice, onBack, onNewScan }: InvoicePreviewPro
 
   /* ── PDF GENERATION ── */
   const generatePDF = useCallback(async () => {
+    try {
     const { jsPDF } = await import("jspdf");
     const autoTable  = (await import("jspdf-autotable")).default;
 
@@ -251,17 +252,27 @@ export function InvoicePreview({ invoice, onBack, onNewScan }: InvoicePreviewPro
       { align: "center" }
     );
 
-    // Open as blob URL in a new tab — avoids the file:// security block
-    // that causes blank PDFs when Edge/Acrobat extension intercepts the download
-    const blob = doc.output("blob");
-    const url  = URL.createObjectURL(blob);
-    const a    = document.createElement("a");
-    a.href     = url;
-    a.download = `${editedInvoiceNumber}.pdf`;
-    a.click();
-    // Also open in new tab so it can be viewed inline (not blocked by file:// origin)
-    window.open(url, "_blank");
-    setTimeout(() => URL.revokeObjectURL(url), 60_000);
+    // Use data URI to open PDF in a new tab — this bypasses the Edge/Acrobat
+    // extension bug where downloaded file:// PDFs render blank.
+    // The user can then use the browser's built-in "Save" button if they want a file.
+    const dataUri = doc.output("datauristring");
+    const win = window.open("", "_blank");
+    if (win) {
+      win.document.write(
+        `<html><head><title>${editedInvoiceNumber}</title></head>` +
+        `<body style="margin:0;padding:0;height:100vh;">` +
+        `<embed src="${dataUri}" type="application/pdf" width="100%" height="100%" />` +
+        `</body></html>`
+      );
+      win.document.close();
+    } else {
+      // Popup blocked — fall back to direct download
+      doc.save(`${editedInvoiceNumber}.pdf`);
+    }
+    } catch (err) {
+      console.error("[PDF] generation error:", err);
+      alert("PDF generation failed: " + (err instanceof Error ? err.message : String(err)));
+    }
   }, [invoice, total, editedInvoiceNumber, editedDate]);
 
   /* ── ON-SCREEN PREVIEW ── */
