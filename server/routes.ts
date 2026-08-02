@@ -164,7 +164,7 @@ Return ONLY valid JSON in this exact format:
       const gemini = getGeminiClient();
       if (gemini) {
         try {
-          const model = gemini.getGenerativeModel({ model: "gemini-1.5-flash" });
+          const model = gemini.getGenerativeModel({ model: "gemini-flash-latest" });
           const imagePart = {
             inlineData: {
               data: req.file.buffer.toString("base64"),
