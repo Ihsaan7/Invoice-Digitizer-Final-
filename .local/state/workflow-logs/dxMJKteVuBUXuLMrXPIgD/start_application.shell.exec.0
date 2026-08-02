@@ -1,0 +1,70 @@
+
+> rest-express@1.0.0 dev
+> NODE_ENV=development tsx server/index.ts
+
+[1G[0KDatabase seeded with 3 sample invoices (MongoDB)
+6:31:04 PM [express] serving on port 5000
+Browserslist: browsers data (caniuse-lite) is 9 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+A PostCSS plugin did not pass the `from` option to `postcss.parse`. This may cause imported assets to be incorrectly transformed. If you've recently added a PostCSS plugin that raised this warning, please contact the package author to fix the issue.
+6:31:08 PM [express] GET /api/invoice-number 200 in 257ms :: {"invoiceNumber":"INV-42"}
+6:31:16 PM [express] POST /api/invoices 201 in 989ms :: {"invoiceNumber":"INV-42","clientName":"ART FASHION LLC","clientAddress":"Abu Dhabi, UAE","currency":"AED","totalAmount":535,"status":"draft","imageUrl":null,"createdAt":"2026-07-12T18:31:15.333Z","id":"6a53dd73e0998cdb55071f9c","items":[{"invoiceId":"6a53dd73e0998cdb55071f9c","description":"J1870","quantity":1,"rate":50,"amount":50,"isUncertain":0,"id":"6a53dd73e0998cdb55071f9d"}]}
+6:31:40 PM [express] GET /api/invoice-number 200 in 246ms :: {"invoiceNumber":"INV-43"}
+6:31:45 PM [express] POST /api/extract 200 in 3279ms :: {"items":[{"description":"27629","quantity":1,"rate":50,"amount":50,"isUncertain":false},{"description":"MT 45101","quantity":1,"rate":50,"amount":50,"isUncertain":false},{"description":"MX 45102","quantity":1,"rate":45,"amount":45,"isUncertain":false},{"description":"Logo - 10275","quantity":1,"rate":50,"amount":50,"isUncertain":false},{"description":"SH - 0389","quantity":1,"rate":50,"amount":50,"isUncertain":false},{"description":"MX - 45102","quantity":1,"rate":70,"amount":70,"isUncertain":false},{"description":"31333","quantity":1,"rate":30,"amount":30,"isUncertain":false},{"description":"Logo 10276","quantity":1,"rate":70,"amount":70,"isUncertain":false},{"description":"3153","quantity":1,"rate":70,"amount":70,"isUncertain":false},{"description":"MX 45120","quantity":1,"rate":70,"amount":70,"isUncertain":false},{"description":"27632","quantity":1,"rate":10,"amount":10,"isUncertain":false}],"grandTotal":535}
+6:32:03 PM [express] POST /api/invoices 201 in 3470ms :: {"invoiceNumber":"INV-43","clientName":"ART FASHION LLC","clientAddress":"Abu Dhabi, UAE","currency":"AED","totalAmount":565,"status":"draft","imageUrl":null,"createdAt":"2026-07-12T18:32:00.333Z","id":"6a53dda0e0998cdb55071f9e","items":[{"invoiceId":"6a53dda0e0998cdb55071f9e","description":"27629","quantity":1,"rate":50,"amount":50,"isUncertain":0,"id":"6a53dda0e0998cdb55071f9f"},{"invoiceId":"6a53dda0e0998cdb55071f9e","description":"MT 45101","quantity":1,"rate":50,"amount":50,"isUncertain":0,"id":"6a53dda0e0998cdb55071fa0"},{"invoiceId":"6a53dda0e0998cdb55071f9e","description":"MX 45102","quantity":1,"rate":45,"amount":45,"isUncertain":0,"id":"6a53dda1e0998cdb55071fa1"},{"invoiceId":"6a53dda0e0998cdb55071f9e","description":"Logo - 10275","quantity":1,"rate":50,"amount":50,"isUncertain":0,"id":"6a53dda1e0998cdb55071fa2"},{"invoiceId":"6a53dda0e0998cdb55071f9e","description":"SH - 0389","quantity":1,"rate":50,"amount":50,"isUncertain":0,"id":"6a53dda1e0998cdb55071fa3"},{"invoiceId":"6a53dda0e0998cdb55071f9e","description":"MX - 45102","quantity":1,"rate":70,"amount":70,"isUncertain":0,"id":"6a53dda1e0998cdb55071fa4"},{"invoiceId":"6a53dda0e0998cdb55071f9e","description":"31333","quantity":1,"rate":30,"amount":30,"isUncertain":0,"id":"6a53dda2e0998cdb55071fa5"},{"invoiceId":"6a53dda0e0998cdb55071f9e","description":"Logo 10276","quantity":1,"rate":70,"amount":70,"isUncertain":0,"id":"6a53dda2e0998cdb55071fa6"},{"invoiceId":"6a53dda0e0998cdb55071f9e","description":"3153","quantity":1,"rate":70,"amount":70,"isUncertain":0,"id":"6a53dda2e0998cdb55071fa7"},{"invoiceId":"6a53dda0e0998cdb55071f9e","description":"MX 45120","quantity":1,"rate":70,"amount":70,"isUncertain":0,"id":"6a53dda2e0998cdb55071fa8"},{"invoiceId":"6a53dda0e0998cdb55071f9e","description":"27632","quantity":1,"rate":10,"amount":10,"isUncertain":0,"id":"6a53dda3e0998cdb55071fa9"}]}
+6:32:04 PM [express] GET /api/invoice-number 200 in 247ms :: {"invoiceNumber":"INV-44"}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[1;1H[0J[2m6:35:06 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/index.css, /src/components/invoice-preview.tsx[22m
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[1;1H[0J[2m6:36:20 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/index.css, /src/components/invoice-preview.tsx[22m [33m(x2)[39m
+6:36:26 PM [express] GET /api/invoice-number 200 in 246ms :: {"invoiceNumber":"INV-44"}
+6:49:29 PM [express] GET /api/invoice-number 304 in 250ms :: {"invoiceNumber":"INV-44"}
+6:49:36 PM [express] POST /api/extract 200 in 5495ms :: {"items":[{"description":"27629","quantity":1,"rate":50,"amount":50,"isUncertain":false},{"description":"MT 45101","quantity":1,"rate":50,"amount":50,"isUncertain":false},{"description":"MT 45102","quantity":1,"rate":45,"amount":45,"isUncertain":false},{"description":"Logo 10275","quantity":1,"rate":60,"amount":60,"isUncertain":false},{"description":"SH 0389","quantity":1,"rate":50,"amount":50,"isUncertain":false},{"description":"CPOS 3YD","quantity":1,"rate":70,"amount":70,"isUncertain":false},{"description":"J185","quantity":1,"rate":30,"amount":30,"isUncertain":false},{"description":"J186","quantity":1,"rate":70,"amount":70,"isUncertain":false},{"description":"J154","quantity":1,"rate":70,"amount":70,"isUncertain":false},{"description":"J187","quantity":1,"rate":70,"amount":70,"isUncertain":false},{"description":"J184","quantity":1,"rate":10,"amount":10,"isUncertain":false}],"grandTotal":535}
+6:49:47 PM [express] POST /api/invoices 201 in 3473ms :: {"invoiceNumber":"INV-44","clientName":"ART FASHION LLC","clientAddress":"Abu Dhabi, UAE","currency":"AED","totalAmount":575,"status":"draft","imageUrl":null,"createdAt":"2026-07-12T18:49:44.281Z","id":"6a53e1c8e0998cdb55071faa","items":[{"invoiceId":"6a53e1c8e0998cdb55071faa","description":"27629","quantity":1,"rate":50,"amount":50,"isUncertain":0,"id":"6a53e1c8e0998cdb55071fab"},{"invoiceId":"6a53e1c8e0998cdb55071faa","description":"MT 45101","quantity":1,"rate":50,"amount":50,"isUncertain":0,"id":"6a53e1c8e0998cdb55071fac"},{"invoiceId":"6a53e1c8e0998cdb55071faa","description":"MT 45102","quantity":1,"rate":45,"amount":45,"isUncertain":0,"id":"6a53e1c9e0998cdb55071fad"},{"invoiceId":"6a53e1c8e0998cdb55071faa","description":"Logo 10275","quantity":1,"rate":60,"amount":60,"isUncertain":0,"id":"6a53e1c9e0998cdb55071fae"},{"invoiceId":"6a53e1c8e0998cdb55071faa","description":"SH 0389","quantity":1,"rate":50,"amount":50,"isUncertain":0,"id":"6a53e1c9e0998cdb55071faf"},{"invoiceId":"6a53e1c8e0998cdb55071faa","description":"CPOS 3YD","quantity":1,"rate":70,"amount":70,"isUncertain":0,"id":"6a53e1c9e0998cdb55071fb0"},{"invoiceId":"6a53e1c8e0998cdb55071faa","description":"J185","quantity":1,"rate":30,"amount":30,"isUncertain":0,"id":"6a53e1cae0998cdb55071fb1"},{"invoiceId":"6a53e1c8e0998cdb55071faa","description":"J186","quantity":1,"rate":70,"amount":70,"isUncertain":0,"id":"6a53e1cae0998cdb55071fb2"},{"invoiceId":"6a53e1c8e0998cdb55071faa","description":"J154","quantity":1,"rate":70,"amount":70,"isUncertain":0,"id":"6a53e1cae0998cdb55071fb3"},{"invoiceId":"6a53e1c8e0998cdb55071faa","description":"J187","quantity":1,"rate":70,"amount":70,"isUncertain":0,"id":"6a53e1cae0998cdb55071fb4"},{"invoiceId":"6a53e1c8e0998cdb55071faa","description":"J184","quantity":1,"rate":10,"amount":10,"isUncertain":0,"id":"6a53e1cbe0998cdb55071fb5"}]}
+6:49:48 PM [express] GET /api/invoice-number 200 in 246ms :: {"invoiceNumber":"INV-45"}

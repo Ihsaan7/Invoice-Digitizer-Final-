@@ -1,0 +1,30 @@
+
+> rest-express@1.0.0 dev
+> NODE_ENV=development tsx server/index.ts
+
+[1G[0KSeed error: Error: MONGODB_URI is not set. Add it to your environment secrets to connect to MongoDB.
+    at connectMongo [90m(/home/runner/workspace/[39mserver/mongodb.ts:13:13[90m)[39m
+    at seedDatabase [90m(/home/runner/workspace/[39mserver/seed.ts:5:9[90m)[39m
+    at <anonymous> [90m(/home/runner/workspace/[39mserver/index.ts:64:9[90m)[39m
+    at <anonymous> [90m(/home/runner/workspace/[39mserver/index.ts:105:1[90m)[39m
+[90m    at ModuleJob.run (node:internal/modules/esm/module_job:325:25)[39m
+[90m    at async ModuleLoader.import (node:internal/modules/esm/loader:606:24)[39m
+[90m    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:117:5)[39m
+6:22:22 PM [express] serving on port 5000
+Browserslist: browsers data (caniuse-lite) is 9 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+A PostCSS plugin did not pass the `from` option to `postcss.parse`. This may cause imported assets to be incorrectly transformed. If you've recently added a PostCSS plugin that raised this warning, please contact the package author to fix the issue.
+6:22:26 PM [express] GET /api/invoice-number 500 in 2ms :: {"error":"Failed to get invoice number"}
+Error extracting data: GoogleGenerativeAIFetchError: [GoogleGenerativeAI Error]: Error fetching from https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent: [404 Not Found] models/gemini-1.5-flash-latest is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.
+    at handleResponseNotOk [90m(file:///home/runner/workspace/[39mnode_modules/[4m@google/generative-ai[24m/dist/index.mjs:432:11[90m)[39m
+[90m    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)[39m
+    at async makeRequest [90m(file:///home/runner/workspace/[39mnode_modules/[4m@google/generative-ai[24m/dist/index.mjs:401:9[90m)[39m
+    at async generateContent [90m(file:///home/runner/workspace/[39mnode_modules/[4m@google/generative-ai[24m/dist/index.mjs:865:22[90m)[39m
+    at async <anonymous> [90m(/home/runner/workspace/[39mserver/routes.ts:166:22[90m)[39m {
+  status: [33m404[39m,
+  statusText: [32m'Not Found'[39m,
+  errorDetails: [90mundefined[39m
+}
+6:22:31 PM [express] POST /api/extract 500 in 159ms :: {"error":"Failed to extract data from image"}

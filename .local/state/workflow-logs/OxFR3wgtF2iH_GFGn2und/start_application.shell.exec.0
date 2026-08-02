@@ -1,0 +1,128 @@
+[1G[0K⠙[1G[0K
+> rest-express@1.0.0 dev
+> NODE_ENV=development tsx server/index.ts
+
+[1G[0K⠙[1G[0KSeed error: Error: MONGODB_URI is not set. Add it to your environment secrets to connect to MongoDB.
+    at connectMongo [90m(/home/runner/workspace/[39mserver/mongodb.ts:13:13[90m)[39m
+    at seedDatabase [90m(/home/runner/workspace/[39mserver/seed.ts:5:9[90m)[39m
+    at <anonymous> [90m(/home/runner/workspace/[39mserver/index.ts:64:9[90m)[39m
+    at <anonymous> [90m(/home/runner/workspace/[39mserver/index.ts:105:1[90m)[39m
+[90m    at ModuleJob.run (node:internal/modules/esm/module_job:325:25)[39m
+[90m    at async ModuleLoader.import (node:internal/modules/esm/loader:606:24)[39m
+[90m    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:117:5)[39m
+6:34:25 AM [express] serving on port 5000
+Browserslist: browsers data (caniuse-lite) is 9 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+A PostCSS plugin did not pass the `from` option to `postcss.parse`. This may cause imported assets to be incorrectly transformed. If you've recently added a PostCSS plugin that raised this warning, please contact the package author to fix the issue.
+6:34:57 AM [express] GET /api/invoice-number 500 in 2ms :: {"error":"Failed to get invoice number"}
+Error extracting data: RateLimitError: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.
+    at Function.generate [90m(/home/runner/workspace/[39mnode_modules/[4mopenai[24m/src/core/error.ts:96:14[90m)[39m
+    at OpenAI.makeStatusError [90m(/home/runner/workspace/[39mnode_modules/[4mopenai[24m/src/client.ts:488:28[90m)[39m
+    at OpenAI.makeRequest [90m(/home/runner/workspace/[39mnode_modules/[4mopenai[24m/src/client.ts:738:24[90m)[39m
+[90m    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)[39m
+    at async <anonymous> [90m(/home/runner/workspace/[39mserver/routes.ts:128:24[90m)[39m {
+  status: [33m429[39m,
+  headers: Headers {
+    date: [32m'Sun, 12 Jul 2026 06:56:17 GMT'[39m,
+    [32m'content-type'[39m: [32m'application/json; charset=utf-8'[39m,
+    [32m'content-length'[39m: [32m'337'[39m,
+    connection: [32m'keep-alive'[39m,
+    [32m'cf-ray'[39m: [32m'a19e25aa2b1d6193-ORD'[39m,
+    [32m'cf-cache-status'[39m: [32m'DYNAMIC'[39m,
+    server: [32m'cloudflare'[39m,
+    [32m'strict-transport-security'[39m: [32m'max-age=31536000; includeSubDomains; preload'[39m,
+    vary: [32m'Origin'[39m,
+    [32m'access-control-expose-headers'[39m: [32m'CF-Ray, CF-Ray'[39m,
+    [32m'x-content-type-options'[39m: [32m'nosniff'[39m,
+    [32m'x-openai-proxy-wasm'[39m: [32m'v0.1'[39m,
+    [32m'x-request-id'[39m: [32m'req_0540825354684812934b5e1786dba4fe'[39m,
+    [32m'set-cookie'[39m: [32m'__cf_bm=fnQbaeYKXPbFyZB1hmEfyotPSnSDqUiaPhItPt_bRo0-1783839376.9891706-1.0.1.1-hCPy22w8cvRXQYIF1BMkCsnMYjLub6cTRSIqv28ZmS1DVYlPSL41fxsFtFQC2QrPT4Rm8BW_Ze3r_409KZJeJVJoUweQq5BXkQv4qUJxJ1Qydr5STCVZqRosCvs29hQ8; HttpOnly; SameSite=None; Secure; Path=/; Domain=api.openai.com; Expires=Sun, 12 Jul 2026 07:26:17 GMT'[39m,
+    [32m'alt-svc'[39m: [32m'h3=":443"; ma=86400'[39m
+  },
+  requestID: [32m'req_0540825354684812934b5e1786dba4fe'[39m,
+  error: {
+    message: [32m'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.'[39m,
+    type: [32m'insufficient_quota'[39m,
+    param: [1mnull[22m,
+    code: [32m'insufficient_quota'[39m
+  },
+  code: [32m'insufficient_quota'[39m,
+  param: [1mnull[22m,
+  type: [32m'insufficient_quota'[39m
+}
+6:56:17 AM [express] POST /api/extract 500 in 3289ms :: {"error":"Failed to extract data from image"}
+6:57:02 AM [express] GET /api/invoice-number 500 in 3ms :: {"error":"Failed to get invoice number"}
+Error extracting data: RateLimitError: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.
+    at Function.generate [90m(/home/runner/workspace/[39mnode_modules/[4mopenai[24m/src/core/error.ts:96:14[90m)[39m
+    at OpenAI.makeStatusError [90m(/home/runner/workspace/[39mnode_modules/[4mopenai[24m/src/client.ts:488:28[90m)[39m
+    at OpenAI.makeRequest [90m(/home/runner/workspace/[39mnode_modules/[4mopenai[24m/src/client.ts:738:24[90m)[39m
+[90m    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)[39m
+    at async <anonymous> [90m(/home/runner/workspace/[39mserver/routes.ts:128:24[90m)[39m {
+  status: [33m429[39m,
+  headers: Headers {
+    date: [32m'Sun, 12 Jul 2026 06:57:08 GMT'[39m,
+    [32m'content-type'[39m: [32m'application/json; charset=utf-8'[39m,
+    [32m'content-length'[39m: [32m'337'[39m,
+    connection: [32m'keep-alive'[39m,
+    [32m'cf-ray'[39m: [32m'a19e26ed4b482315-ORD'[39m,
+    [32m'cf-cache-status'[39m: [32m'DYNAMIC'[39m,
+    server: [32m'cloudflare'[39m,
+    [32m'strict-transport-security'[39m: [32m'max-age=31536000; includeSubDomains; preload'[39m,
+    vary: [32m'Origin'[39m,
+    [32m'access-control-expose-headers'[39m: [32m'CF-Ray, CF-Ray'[39m,
+    [32m'x-content-type-options'[39m: [32m'nosniff'[39m,
+    [32m'x-openai-proxy-wasm'[39m: [32m'v0.1'[39m,
+    [32m'x-request-id'[39m: [32m'req_ca9fac6db08142bdb917e23aa2ed0605'[39m,
+    [32m'set-cookie'[39m: [32m'__cf_bm=tnh9tEdmA6HHkdkXXMVT5k809FW6Az9Q7PoDkcFAQsI-1783839428.6907094-1.0.1.1-hNFAFo3EmpbLGRbYQx9a5KVfYSfefDVKR0a7uDtLeW2.904ATA4LOCU7CcgodwpSXpYTVY_aI.iVrW.UsHpmIYRNc7Hvx.9FkIIKTrtR.V_1KnsuW4JL2yiEVSbBR4pc; HttpOnly; SameSite=None; Secure; Path=/; Domain=api.openai.com; Expires=Sun, 12 Jul 2026 07:27:08 GMT'[39m,
+    [32m'alt-svc'[39m: [32m'h3=":443"; ma=86400'[39m
+  },
+  requestID: [32m'req_ca9fac6db08142bdb917e23aa2ed0605'[39m,
+  error: {
+    message: [32m'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.'[39m,
+    type: [32m'insufficient_quota'[39m,
+    param: [1mnull[22m,
+    code: [32m'insufficient_quota'[39m
+  },
+  code: [32m'insufficient_quota'[39m,
+  param: [1mnull[22m,
+  type: [32m'insufficient_quota'[39m
+}
+6:57:08 AM [express] POST /api/extract 500 in 2311ms :: {"error":"Failed to extract data from image"}
+Error extracting data: RateLimitError: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.
+    at Function.generate [90m(/home/runner/workspace/[39mnode_modules/[4mopenai[24m/src/core/error.ts:96:14[90m)[39m
+    at OpenAI.makeStatusError [90m(/home/runner/workspace/[39mnode_modules/[4mopenai[24m/src/client.ts:488:28[90m)[39m
+    at OpenAI.makeRequest [90m(/home/runner/workspace/[39mnode_modules/[4mopenai[24m/src/client.ts:738:24[90m)[39m
+[90m    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)[39m
+    at async <anonymous> [90m(/home/runner/workspace/[39mserver/routes.ts:128:24[90m)[39m {
+  status: [33m429[39m,
+  headers: Headers {
+    date: [32m'Sun, 12 Jul 2026 06:57:36 GMT'[39m,
+    [32m'content-type'[39m: [32m'application/json; charset=utf-8'[39m,
+    [32m'content-length'[39m: [32m'337'[39m,
+    connection: [32m'keep-alive'[39m,
+    [32m'cf-ray'[39m: [32m'a19e2798ed80f4e6-ORD'[39m,
+    [32m'cf-cache-status'[39m: [32m'DYNAMIC'[39m,
+    server: [32m'cloudflare'[39m,
+    [32m'strict-transport-security'[39m: [32m'max-age=31536000; includeSubDomains; preload'[39m,
+    vary: [32m'Origin'[39m,
+    [32m'access-control-expose-headers'[39m: [32m'CF-Ray, CF-Ray'[39m,
+    [32m'x-content-type-options'[39m: [32m'nosniff'[39m,
+    [32m'x-openai-proxy-wasm'[39m: [32m'v0.1'[39m,
+    [32m'x-request-id'[39m: [32m'req_8c596c645279481d9c23fcb7ffc2fb82'[39m,
+    [32m'set-cookie'[39m: [32m'__cf_bm=pwlYkeBK.Xpixyn6e1GPPMq2FORN1Jq67c3cj93Lo5I-1783839456.1506097-1.0.1.1-oImAirNdqdbM3Jv4H2ohGxO8qKvKOqQV9XkgmHC62.d_mp7TuFxjNJkD9.Iu4vvH83hy0MSgtLc2nRCrKLqBelEWf2abv.TlKzB5Fe12_cvGkLSMT9wxUaQyX.qT3pM_; HttpOnly; SameSite=None; Secure; Path=/; Domain=api.openai.com; Expires=Sun, 12 Jul 2026 07:27:36 GMT'[39m,
+    [32m'alt-svc'[39m: [32m'h3=":443"; ma=86400'[39m
+  },
+  requestID: [32m'req_8c596c645279481d9c23fcb7ffc2fb82'[39m,
+  error: {
+    message: [32m'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.'[39m,
+    type: [32m'insufficient_quota'[39m,
+    param: [1mnull[22m,
+    code: [32m'insufficient_quota'[39m
+  },
+  code: [32m'insufficient_quota'[39m,
+  param: [1mnull[22m,
+  type: [32m'insufficient_quota'[39m
+}
+6:57:36 AM [express] POST /api/extract 500 in 1797ms :: {"error":"Failed to extract data from image"}

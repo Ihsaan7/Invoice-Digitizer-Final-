@@ -1,0 +1,124 @@
+
+> rest-express@1.0.0 dev
+> NODE_ENV=development tsx server/index.ts
+
+[1G[0KSeed error: Error: MONGODB_URI is not set. Add it to your environment secrets to connect to MongoDB.
+    at connectMongo [90m(/home/runner/workspace/[39mserver/mongodb.ts:13:13[90m)[39m
+    at seedDatabase [90m(/home/runner/workspace/[39mserver/seed.ts:5:9[90m)[39m
+    at <anonymous> [90m(/home/runner/workspace/[39mserver/index.ts:64:9[90m)[39m
+    at <anonymous> [90m(/home/runner/workspace/[39mserver/index.ts:105:1[90m)[39m
+[90m    at ModuleJob.run (node:internal/modules/esm/module_job:325:25)[39m
+[90m    at async ModuleLoader.import (node:internal/modules/esm/loader:606:24)[39m
+[90m    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:117:5)[39m
+6:28:24 PM [express] serving on port 5000
+Browserslist: browsers data (caniuse-lite) is 9 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+A PostCSS plugin did not pass the `from` option to `postcss.parse`. This may cause imported assets to be incorrectly transformed. If you've recently added a PostCSS plugin that raised this warning, please contact the package author to fix the issue.
+6:28:29 PM [express] GET /api/invoice-number 500 in 2ms :: {"error":"Failed to get invoice number"}
+6:28:36 PM [express] POST /api/extract 200 in 3099ms :: {"items":[{"description":"J1870","quantity":1,"rate":50,"amount":50,"isUncertain":false},{"description":"J188","quantity":1,"rate":45,"amount":45,"isUncertain":false},{"description":"CPOS","quantity":1,"rate":50,"amount":50,"isUncertain":false},{"description":"3YD","quantity":1,"rate":70,"amount":70,"isUncertain":false},{"description":"J185","quantity":1,"rate":30,"amount":30,"isUncertain":false},{"description":"J186","quantity":1,"rate":70,"amount":70,"isUncertain":false},{"description":"J154","quantity":1,"rate":70,"amount":70,"isUncertain":false},{"description":"J187","quantity":1,"rate":70,"amount":70,"isUncertain":false},{"description":"J184","quantity":1,"rate":10,"amount":10,"isUncertain":false}],"grandTotal":535}
+6:29:00 PM [express] GET /api/invoice-number 500 in 0ms :: {"error":"Failed to get invoice number"}
+6:29:05 PM [express] POST /api/extract 200 in 2715ms :: {"items":[{"description":"27629","quantity":1,"rate":50,"amount":50,"isUncertain":false},{"description":"MT 45101","quantity":1,"rate":450,"amount":450,"isUncertain":false},{"description":"MX 45102","quantity":1,"rate":65,"amount":65,"isUncertain":false},{"description":"Loco 10275","quantity":1,"rate":50,"amount":50,"isUncertain":true},{"description":"SH 0389","quantity":1,"rate":50,"amount":50,"isUncertain":false},{"description":"CPOS 3YD","quantity":1,"rate":70,"amount":70,"isUncertain":false},{"description":"J185","quantity":1,"rate":30,"amount":30,"isUncertain":false},{"description":"J186","quantity":1,"rate":70,"amount":70,"isUncertain":false},{"description":"J154","quantity":1,"rate":70,"amount":70,"isUncertain":false},{"description":"J184","quantity":1,"rate":10,"amount":10,"isUncertain":false}],"grandTotal":535}
+Error creating invoice: Error: MONGODB_URI is not set. Add it to your environment secrets to connect to MongoDB.
+    at connectMongo [90m(/home/runner/workspace/[39mserver/mongodb.ts:13:13[90m)[39m
+    at MongoStorage.getNextInvoiceNumber [90m(/home/runner/workspace/[39mserver/storage.ts:104:11[90m)[39m
+    at <anonymous> [90m(/home/runner/workspace/[39mserver/routes.ts:44:43[90m)[39m
+    at Layer.handleRequest [90m(/home/runner/workspace/[39mnode_modules/[4mrouter[24m/lib/layer.js:152:17[90m)[39m
+    at next [90m(/home/runner/workspace/[39mnode_modules/[4mrouter[24m/lib/route.js:157:13[90m)[39m
+    at Route.dispatch [90m(/home/runner/workspace/[39mnode_modules/[4mrouter[24m/lib/route.js:117:3[90m)[39m
+    at handle [90m(/home/runner/workspace/[39mnode_modules/[4mrouter[24m/index.js:435:11[90m)[39m
+    at Layer.handleRequest [90m(/home/runner/workspace/[39mnode_modules/[4mrouter[24m/lib/layer.js:152:17[90m)[39m
+    at [90m/home/runner/workspace/[39mnode_modules/[4mrouter[24m/index.js:295:15
+    at processParams [90m(/home/runner/workspace/[39mnode_modules/[4mrouter[24m/index.js:582:12[90m)[39m
+    at next [90m(/home/runner/workspace/[39mnode_modules/[4mrouter[24m/index.js:291:5[90m)[39m
+    at <anonymous> [90m(/home/runner/workspace/[39mserver/index.ts:60:3[90m)[39m
+    at Layer.handleRequest [90m(/home/runner/workspace/[39mnode_modules/[4mrouter[24m/lib/layer.js:152:17[90m)[39m
+    at trimPrefix [90m(/home/runner/workspace/[39mnode_modules/[4mrouter[24m/index.js:342:13[90m)[39m
+    at [90m/home/runner/workspace/[39mnode_modules/[4mrouter[24m/index.js:297:9
+    at processParams [90m(/home/runner/workspace/[39mnode_modules/[4mrouter[24m/index.js:582:12[90m)[39m
+    at next [90m(/home/runner/workspace/[39mnode_modules/[4mrouter[24m/index.js:291:5[90m)[39m
+    at read [90m(/home/runner/workspace/[39mnode_modules/[4mbody-parser[24m/lib/read.js:42:5[90m)[39m
+    at urlencodedParser [90m(/home/runner/workspace/[39mnode_modules/[4mbody-parser[24m/lib/types/urlencoded.js:57:5[90m)[39m
+    at Layer.handleRequest [90m(/home/runner/workspace/[39mnode_modules/[4mrouter[24m/lib/layer.js:152:17[90m)[39m
+    at trimPrefix [90m(/home/runner/workspace/[39mnode_modules/[4mrouter[24m/index.js:342:13[90m)[39m
+    at [90m/home/runner/workspace/[39mnode_modules/[4mrouter[24m/index.js:297:9
+    at processParams [90m(/home/runner/workspace/[39mnode_modules/[4mrouter[24m/index.js:582:12[90m)[39m
+    at next [90m(/home/runner/workspace/[39mnode_modules/[4mrouter[24m/index.js:291:5[90m)[39m
+    at [90m/home/runner/workspace/[39mnode_modules/[4mbody-parser[24m/lib/read.js:171:5
+[90m    at AsyncResource.runInAsyncScope (node:async_hooks:206:9)[39m
+    at invokeCallback [90m(/home/runner/workspace/[39mnode_modules/[4mraw-body[24m/index.js:238:16[90m)[39m
+    at done [90m(/home/runner/workspace/[39mnode_modules/[4mraw-body[24m/index.js:227:7[90m)[39m
+    at IncomingMessage.onEnd [90m(/home/runner/workspace/[39mnode_modules/[4mraw-body[24m/index.js:287:7[90m)[39m
+[90m    at IncomingMessage.emit (node:events:524:28)[39m
+[90m    at endReadableNT (node:internal/streams/readable:1698:12)[39m
+[90m    at process.processTicksAndRejections (node:internal/process/task_queues:82:21)[39m
+6:29:09 PM [express] POST /api/invoices 500 in 2ms :: {"error":"Failed to create invoice"}
+Error creating invoice: Error: MONGODB_URI is not set. Add it to your environment secrets to connect to MongoDB.
+    at connectMongo [90m(/home/runner/workspace/[39mserver/mongodb.ts:13:13[90m)[39m
+    at MongoStorage.getNextInvoiceNumber [90m(/home/runner/workspace/[39mserver/storage.ts:104:11[90m)[39m
+    at <anonymous> [90m(/home/runner/workspace/[39mserver/routes.ts:44:43[90m)[39m
+    at Layer.handleRequest [90m(/home/runner/workspace/[39mnode_modules/[4mrouter[24m/lib/layer.js:152:17[90m)[39m
+    at next [90m(/home/runner/workspace/[39mnode_modules/[4mrouter[24m/lib/route.js:157:13[90m)[39m
+    at Route.dispatch [90m(/home/runner/workspace/[39mnode_modules/[4mrouter[24m/lib/route.js:117:3[90m)[39m
+    at handle [90m(/home/runner/workspace/[39mnode_modules/[4mrouter[24m/index.js:435:11[90m)[39m
+    at Layer.handleRequest [90m(/home/runner/workspace/[39mnode_modules/[4mrouter[24m/lib/layer.js:152:17[90m)[39m
+    at [90m/home/runner/workspace/[39mnode_modules/[4mrouter[24m/index.js:295:15
+    at processParams [90m(/home/runner/workspace/[39mnode_modules/[4mrouter[24m/index.js:582:12[90m)[39m
+    at next [90m(/home/runner/workspace/[39mnode_modules/[4mrouter[24m/index.js:291:5[90m)[39m
+    at <anonymous> [90m(/home/runner/workspace/[39mserver/index.ts:60:3[90m)[39m
+    at Layer.handleRequest [90m(/home/runner/workspace/[39mnode_modules/[4mrouter[24m/lib/layer.js:152:17[90m)[39m
+    at trimPrefix [90m(/home/runner/workspace/[39mnode_modules/[4mrouter[24m/index.js:342:13[90m)[39m
+    at [90m/home/runner/workspace/[39mnode_modules/[4mrouter[24m/index.js:297:9
+    at processParams [90m(/home/runner/workspace/[39mnode_modules/[4mrouter[24m/index.js:582:12[90m)[39m
+    at next [90m(/home/runner/workspace/[39mnode_modules/[4mrouter[24m/index.js:291:5[90m)[39m
+    at read [90m(/home/runner/workspace/[39mnode_modules/[4mbody-parser[24m/lib/read.js:42:5[90m)[39m
+    at urlencodedParser [90m(/home/runner/workspace/[39mnode_modules/[4mbody-parser[24m/lib/types/urlencoded.js:57:5[90m)[39m
+    at Layer.handleRequest [90m(/home/runner/workspace/[39mnode_modules/[4mrouter[24m/lib/layer.js:152:17[90m)[39m
+    at trimPrefix [90m(/home/runner/workspace/[39mnode_modules/[4mrouter[24m/index.js:342:13[90m)[39m
+    at [90m/home/runner/workspace/[39mnode_modules/[4mrouter[24m/index.js:297:9
+    at processParams [90m(/home/runner/workspace/[39mnode_modules/[4mrouter[24m/index.js:582:12[90m)[39m
+    at next [90m(/home/runner/workspace/[39mnode_modules/[4mrouter[24m/index.js:291:5[90m)[39m
+    at [90m/home/runner/workspace/[39mnode_modules/[4mbody-parser[24m/lib/read.js:171:5
+[90m    at AsyncResource.runInAsyncScope (node:async_hooks:206:9)[39m
+    at invokeCallback [90m(/home/runner/workspace/[39mnode_modules/[4mraw-body[24m/index.js:238:16[90m)[39m
+    at done [90m(/home/runner/workspace/[39mnode_modules/[4mraw-body[24m/index.js:227:7[90m)[39m
+    at IncomingMessage.onEnd [90m(/home/runner/workspace/[39mnode_modules/[4mraw-body[24m/index.js:287:7[90m)[39m
+[90m    at IncomingMessage.emit (node:events:524:28)[39m
+[90m    at endReadableNT (node:internal/streams/readable:1698:12)[39m
+[90m    at process.processTicksAndRejections (node:internal/process/task_queues:82:21)[39m
+6:29:39 PM [express] POST /api/invoices 500 in 5ms :: {"error":"Failed to create invoice"}
+Error creating invoice: Error: MONGODB_URI is not set. Add it to your environment secrets to connect to MongoDB.
+    at connectMongo [90m(/home/runner/workspace/[39mserver/mongodb.ts:13:13[90m)[39m
+    at MongoStorage.getNextInvoiceNumber [90m(/home/runner/workspace/[39mserver/storage.ts:104:11[90m)[39m
+    at <anonymous> [90m(/home/runner/workspace/[39mserver/routes.ts:44:43[90m)[39m
+    at Layer.handleRequest [90m(/home/runner/workspace/[39mnode_modules/[4mrouter[24m/lib/layer.js:152:17[90m)[39m
+    at next [90m(/home/runner/workspace/[39mnode_modules/[4mrouter[24m/lib/route.js:157:13[90m)[39m
+    at Route.dispatch [90m(/home/runner/workspace/[39mnode_modules/[4mrouter[24m/lib/route.js:117:3[90m)[39m
+    at handle [90m(/home/runner/workspace/[39mnode_modules/[4mrouter[24m/index.js:435:11[90m)[39m
+    at Layer.handleRequest [90m(/home/runner/workspace/[39mnode_modules/[4mrouter[24m/lib/layer.js:152:17[90m)[39m
+    at [90m/home/runner/workspace/[39mnode_modules/[4mrouter[24m/index.js:295:15
+    at processParams [90m(/home/runner/workspace/[39mnode_modules/[4mrouter[24m/index.js:582:12[90m)[39m
+    at next [90m(/home/runner/workspace/[39mnode_modules/[4mrouter[24m/index.js:291:5[90m)[39m
+    at <anonymous> [90m(/home/runner/workspace/[39mserver/index.ts:60:3[90m)[39m
+    at Layer.handleRequest [90m(/home/runner/workspace/[39mnode_modules/[4mrouter[24m/lib/layer.js:152:17[90m)[39m
+    at trimPrefix [90m(/home/runner/workspace/[39mnode_modules/[4mrouter[24m/index.js:342:13[90m)[39m
+    at [90m/home/runner/workspace/[39mnode_modules/[4mrouter[24m/index.js:297:9
+    at processParams [90m(/home/runner/workspace/[39mnode_modules/[4mrouter[24m/index.js:582:12[90m)[39m
+    at next [90m(/home/runner/workspace/[39mnode_modules/[4mrouter[24m/index.js:291:5[90m)[39m
+    at read [90m(/home/runner/workspace/[39mnode_modules/[4mbody-parser[24m/lib/read.js:42:5[90m)[39m
+    at urlencodedParser [90m(/home/runner/workspace/[39mnode_modules/[4mbody-parser[24m/lib/types/urlencoded.js:57:5[90m)[39m
+    at Layer.handleRequest [90m(/home/runner/workspace/[39mnode_modules/[4mrouter[24m/lib/layer.js:152:17[90m)[39m
+    at trimPrefix [90m(/home/runner/workspace/[39mnode_modules/[4mrouter[24m/index.js:342:13[90m)[39m
+    at [90m/home/runner/workspace/[39mnode_modules/[4mrouter[24m/index.js:297:9
+    at processParams [90m(/home/runner/workspace/[39mnode_modules/[4mrouter[24m/index.js:582:12[90m)[39m
+    at next [90m(/home/runner/workspace/[39mnode_modules/[4mrouter[24m/index.js:291:5[90m)[39m
+    at [90m/home/runner/workspace/[39mnode_modules/[4mbody-parser[24m/lib/read.js:171:5
+[90m    at AsyncResource.runInAsyncScope (node:async_hooks:206:9)[39m
+    at invokeCallback [90m(/home/runner/workspace/[39mnode_modules/[4mraw-body[24m/index.js:238:16[90m)[39m
+    at done [90m(/home/runner/workspace/[39mnode_modules/[4mraw-body[24m/index.js:227:7[90m)[39m
+    at IncomingMessage.onEnd [90m(/home/runner/workspace/[39mnode_modules/[4mraw-body[24m/index.js:287:7[90m)[39m
+[90m    at IncomingMessage.emit (node:events:524:28)[39m
+[90m    at endReadableNT (node:internal/streams/readable:1698:12)[39m
+[90m    at process.processTicksAndRejections (node:internal/process/task_queues:82:21)[39m
+6:29:42 PM [express] POST /api/invoices 500 in 1ms :: {"error":"Failed to create invoice"}

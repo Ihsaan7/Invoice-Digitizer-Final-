@@ -1,0 +1,44 @@
+
+> rest-express@1.0.0 dev
+> NODE_ENV=development tsx server/index.ts
+
+[1G[0KSeed error: Error: MONGODB_URI is not set. Add it to your environment secrets to connect to MongoDB.
+    at connectMongo [90m(/home/runner/workspace/[39mserver/mongodb.ts:13:13[90m)[39m
+    at seedDatabase [90m(/home/runner/workspace/[39mserver/seed.ts:5:9[90m)[39m
+    at <anonymous> [90m(/home/runner/workspace/[39mserver/index.ts:64:9[90m)[39m
+    at <anonymous> [90m(/home/runner/workspace/[39mserver/index.ts:105:1[90m)[39m
+[90m    at ModuleJob.run (node:internal/modules/esm/module_job:325:25)[39m
+[90m    at async ModuleLoader.import (node:internal/modules/esm/loader:606:24)[39m
+[90m    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:117:5)[39m
+6:21:58 PM [express] serving on port 5000
+Browserslist: browsers data (caniuse-lite) is 9 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+A PostCSS plugin did not pass the `from` option to `postcss.parse`. This may cause imported assets to be incorrectly transformed. If you've recently added a PostCSS plugin that raised this warning, please contact the package author to fix the issue.
+6:22:02 PM [express] GET /api/invoice-number 500 in 2ms :: {"error":"Failed to get invoice number"}
+Error extracting data: GoogleGenerativeAIFetchError: [GoogleGenerativeAI Error]: Error fetching from https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent: [429 Too Many Requests] You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. 
+* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-2.0-flash
+* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-2.0-flash
+* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_input_token_count, limit: 0, model: gemini-2.0-flash
+Please retry in 52.847002515s. [{"@type":"type.googleapis.com/google.rpc.Help","links":[{"description":"Learn more about Gemini API quotas","url":"https://ai.google.dev/gemini-api/docs/rate-limits"}]},{"@type":"type.googleapis.com/google.rpc.QuotaFailure","violations":[{"quotaMetric":"generativelanguage.googleapis.com/generate_content_free_tier_requests","quotaId":"GenerateRequestsPerDayPerProjectPerModel-FreeTier","quotaDimensions":{"model":"gemini-2.0-flash","location":"global"}},{"quotaMetric":"generativelanguage.googleapis.com/generate_content_free_tier_requests","quotaId":"GenerateRequestsPerMinutePerProjectPerModel-FreeTier","quotaDimensions":{"model":"gemini-2.0-flash","location":"global"}},{"quotaMetric":"generativelanguage.googleapis.com/generate_content_free_tier_input_token_count","quotaId":"GenerateContentInputTokensPerModelPerMinute-FreeTier","quotaDimensions":{"model":"gemini-2.0-flash","location":"global"}}]},{"@type":"type.googleapis.com/google.rpc.RetryInfo","retryDelay":"52s"}]
+    at handleResponseNotOk [90m(file:///home/runner/workspace/[39mnode_modules/[4m@google/generative-ai[24m/dist/index.mjs:432:11[90m)[39m
+[90m    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)[39m
+    at async makeRequest [90m(file:///home/runner/workspace/[39mnode_modules/[4m@google/generative-ai[24m/dist/index.mjs:401:9[90m)[39m
+    at async generateContent [90m(file:///home/runner/workspace/[39mnode_modules/[4m@google/generative-ai[24m/dist/index.mjs:865:22[90m)[39m
+    at async <anonymous> [90m(/home/runner/workspace/[39mserver/routes.ts:166:22[90m)[39m {
+  status: [33m429[39m,
+  statusText: [32m'Too Many Requests'[39m,
+  errorDetails: [
+    { [32m'@type'[39m: [32m'type.googleapis.com/google.rpc.Help'[39m, links: [36m[Array][39m },
+    {
+      [32m'@type'[39m: [32m'type.googleapis.com/google.rpc.QuotaFailure'[39m,
+      violations: [36m[Array][39m
+    },
+    {
+      [32m'@type'[39m: [32m'type.googleapis.com/google.rpc.RetryInfo'[39m,
+      retryDelay: [32m'52s'[39m
+    }
+  ]
+}
+6:22:07 PM [express] POST /api/extract 500 in 139ms :: {"error":"Failed to extract data from image"}

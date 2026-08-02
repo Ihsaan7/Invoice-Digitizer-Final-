@@ -1,0 +1,216 @@
+
+> rest-express@1.0.0 dev
+> NODE_ENV=development tsx server/index.ts
+
+[1G[0K9:26:46 AM [express] serving on port 5000
+Browserslist: browsers data (caniuse-lite) is 10 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+A PostCSS plugin did not pass the `from` option to `postcss.parse`. This may cause imported assets to be incorrectly transformed. If you've recently added a PostCSS plugin that raised this warning, please contact the package author to fix the issue.
+9:26:53 AM [express] GET /api/invoice-number 304 in 246ms :: {"invoiceNumber":"INV-47"}
+9:27:40 AM [express] GET /api/invoice-number 200 in 236ms :: {"invoiceNumber":"INV-47"}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[1;1H[0J[2m9:28:00 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/index.css, /src/components/invoice-preview.tsx[22m
+9:31:09 AM [express] GET /api/invoices 200 in 240ms :: [{"invoiceNumber":"INV-46","clientName":"ART FASHION LLC","clientAddress":"Abu Dhabi, UAE","currency":"AED","totalAmount":485,"status":"draft","imageUrl":null,"createdAt":"2026-08-02T09:23:35.430Z","id":"6a6f0c97678fc762b41ebee0"},{"invoiceNumber":"INV-45","clientName":"ART FASHION LLC","clientAddress":"Abu Dhabi, UAE","currency":"AED","totalAmount":475,"status":"draft","imageUrl":null,"createdAt":"2026-08-02T09:20:43.804Z","id":"6a6f0beb678fc762b41ebecf"},{"invoiceNumber":"INV-44","clientName":"ART FASHION LLC","clientAddress":"Abu Dhabi, UAE","currency":"AED","totalAmount":575,"status":"draft","imageUrl":null,"createdAt":"2026-07-12T18:49:44.281Z","id":"6a53e1c8e0998cdb55071faa"},{"invoiceNumber":"INV-43","clientName":"ART FASHION LLC","clientAddress":"Abu Dhabi, UAE","currency":"AED","totalAmount":565,"status":"draft","imageUrl":null,"createdAt":"2026-07-12T18:32:00.333Z","id":"6a53dda0e0998cdb55071f9e"},{"invoiceNumber":"INV-42","clientName":"ART FASHION LLC","clientAddress":"Abu Dhabi, UAE","currency":"AED","totalAmount":535,"status":"draft","imageUrl":null,"createdAt":"2026-07-12T18:31:15.333Z","id":"6a53dd73e0998cdb55071f9c"},{"invoiceNumber":"INV-41","clientName":"ART FASHION LLC","clientAddress":"Abu Dhabi, UAE","currency":"AED","totalAmount":1590,"status":"draft","imageUrl":null,"createdAt":"2026-07-12T18:31:02.881Z","id":"6a53dd66e0998cdb55071f98"},{"invoiceNumber":"INV-40","clientName":"ART FASHION LLC","clientAddress":"Abu Dhabi, UAE","currency":"AED","totalAmount":5830,"status":"draft","imageUrl":null,"createdAt":"2026-07-12T18:31:02.393Z","id":"6a53dd66e0998cdb55071f94"},{"invoiceNumber":"INV-39","clientName":"ART FASHION LLC","clientAddress":"Abu Dhabi, UAE","currency":"AED","totalAmount":3200,"status":"draft","imageUrl":null,"createdAt":"2026-07-12T18:31:00.690Z","id":"6a53dd64e0998cdb55071f8f"}]
+9:31:12 AM [express] GET /api/invoices/6a6f0c97678fc762b41ebee0 200 in 473ms :: {"invoiceNumber":"INV-46","clientName":"ART FASHION LLC","clientAddress":"Abu Dhabi, UAE","currency":"AED","totalAmount":485,"status":"draft","imageUrl":null,"createdAt":"2026-08-02T09:23:35.430Z","id":"6a6f0c97678fc762b41ebee0","items":[{"invoiceId":"6a6f0c97678fc762b41ebee0","description":"MX 45191 7-1/2 x 7-1/2","quantity":1,"rate":40,"amount":40,"isUncertain":0,"id":"6a6f0c97678fc762b41ebee1"},{"invoiceId":"6a6f0c97678fc762b41ebee0","description":"MX 45191 6-1/2 x 6-1/2","quantity":1,"rate":40,"amount":40,"isUncertain":0,"id":"6a6f0c97678fc762b41ebee2"},{"invoiceId":"6a6f0c97678fc762b41ebee0","description":"MX 45191 6 x 6","quantity":1,"rate":40,"amount":40,"isUncertain":0,"id":"6a6f0c98678fc762b41ebee3"},{"invoiceId":"6a6f0c97678fc762b41ebee0","description":"47594","quantity":1,"rate":10,"amount":10,"isUncertain":0,"id":"6a6f0c98678fc762b41ebee4"},{"invoiceId":"6a6f0c97678fc762b41ebee0","description":"27744","quantity":1,"rate":20,"amount":20,"isUncertain":0,"id":"6a6f0c98678fc762b41ebee5"},{"invoiceId":"6a6f0c97678fc762b41ebee0","description":"MX 45191 5 x 5 ","quantity":1,"rate":40,"amount":40,"isUncertain":0,"id":"6a6f0c98678fc762b41ebee6"},{"invoiceId":"6a6f0c97678fc762b41ebee0","description":"MX 45191 KAJM","quantity":1,"rate":40,"amount":40,"isUncertain":0,"id":"6a6f0c99678fc762b41ebee7"},{"invoiceId":"6a6f0c97678fc762b41ebee0","description":"MX 45191 J151-6","quantity":1,"rate":40,"amount":40,"isUncertain":0,"id":"6a6f0c99678fc762b41ebee8"},{"invoiceId":"6a6f0c97678fc762b41ebee0","description":"Rm 38","quantity":1,"rate":15,"amount":15,"isUncertain":0,"id":"6a6f0c99678fc762b41ebee9"},{"invoiceId":"6a6f0c97678fc762b41ebee0","description":"Rm 5M","quantity":1,"rate":10,"amount":10,"isUncertain":0,"id":"6a6f0c99678fc762b41ebeea"},{"invoiceId":"6a6f0c97678fc762b41ebee0","description":"Rm 3M","quantity":1,"rate":10,"amount":10,"isUncertain":0,"id":"6a6f0c9a678fc762b41ebeeb"},{"invoiceId":"6a6f0c97678fc762b41ebee0","description":"Rm 8M","quantity":1,"rate":20,"amount":20,"isUncertain":0,"id":"6a6f0c9a678fc762b41ebeec"},{"invoiceId":"6a6f0c97678fc762b41ebee0","description":"Rm J82","quantity":1,"rate":10,"amount":10,"isUncertain":0,"id":"6a6f0c9a678fc762b41ebeed"},{"invoiceId":"6a6f0c97678fc762b41ebee0","description":"27709 JMA","quantity":1,"rate":80,"amount":80,"isUncertain":0,"id":"6a6f0c9a678fc762b41ebeee"},{"invoiceId":"6a6f0c97678fc762b41ebee0","description":"392 J190","quantity":1,"rate":40,"amount":40,"isUncertain":0,"id":"6a6f0c9b678fc762b41ebeef"},{"invoiceId":"6a6f0c97678fc762b41ebee0","description":"27749 5186","quantity":1,"rate":20,"amount":20,"isUncertain":0,"id":"6a6f0c9b678fc762b41ebef0"},{"invoiceId":"6a6f0c97678fc762b41ebee0","description":"Rm J79","quantity":1,"rate":10,"amount":10,"isUncertain":0,"id":"6a6f0c9b678fc762b41ebef1"}]}
+9:31:37 AM [express] GET /api/invoice-number 304 in 235ms :: {"invoiceNumber":"INV-47"}
+9:31:38 AM [express] GET /api/invoices 304 in 237ms :: [{"invoiceNumber":"INV-46","clientName":"ART FASHION LLC","clientAddress":"Abu Dhabi, UAE","currency":"AED","totalAmount":485,"status":"draft","imageUrl":null,"createdAt":"2026-08-02T09:23:35.430Z","id":"6a6f0c97678fc762b41ebee0"},{"invoiceNumber":"INV-45","clientName":"ART FASHION LLC","clientAddress":"Abu Dhabi, UAE","currency":"AED","totalAmount":475,"status":"draft","imageUrl":null,"createdAt":"2026-08-02T09:20:43.804Z","id":"6a6f0beb678fc762b41ebecf"},{"invoiceNumber":"INV-44","clientName":"ART FASHION LLC","clientAddress":"Abu Dhabi, UAE","currency":"AED","totalAmount":575,"status":"draft","imageUrl":null,"createdAt":"2026-07-12T18:49:44.281Z","id":"6a53e1c8e0998cdb55071faa"},{"invoiceNumber":"INV-43","clientName":"ART FASHION LLC","clientAddress":"Abu Dhabi, UAE","currency":"AED","totalAmount":565,"status":"draft","imageUrl":null,"createdAt":"2026-07-12T18:32:00.333Z","id":"6a53dda0e0998cdb55071f9e"},{"invoiceNumber":"INV-42","clientName":"ART FASHION LLC","clientAddress":"Abu Dhabi, UAE","currency":"AED","totalAmount":535,"status":"draft","imageUrl":null,"createdAt":"2026-07-12T18:31:15.333Z","id":"6a53dd73e0998cdb55071f9c"},{"invoiceNumber":"INV-41","clientName":"ART FASHION LLC","clientAddress":"Abu Dhabi, UAE","currency":"AED","totalAmount":1590,"status":"draft","imageUrl":null,"createdAt":"2026-07-12T18:31:02.881Z","id":"6a53dd66e0998cdb55071f98"},{"invoiceNumber":"INV-40","clientName":"ART FASHION LLC","clientAddress":"Abu Dhabi, UAE","currency":"AED","totalAmount":5830,"status":"draft","imageUrl":null,"createdAt":"2026-07-12T18:31:02.393Z","id":"6a53dd66e0998cdb55071f94"},{"invoiceNumber":"INV-39","clientName":"ART FASHION LLC","clientAddress":"Abu Dhabi, UAE","currency":"AED","totalAmount":3200,"status":"draft","imageUrl":null,"createdAt":"2026-07-12T18:31:00.690Z","id":"6a53dd64e0998cdb55071f8f"}]
+9:31:40 AM [express] GET /api/invoices/6a6f0c97678fc762b41ebee0 304 in 470ms :: {"invoiceNumber":"INV-46","clientName":"ART FASHION LLC","clientAddress":"Abu Dhabi, UAE","currency":"AED","totalAmount":485,"status":"draft","imageUrl":null,"createdAt":"2026-08-02T09:23:35.430Z","id":"6a6f0c97678fc762b41ebee0","items":[{"invoiceId":"6a6f0c97678fc762b41ebee0","description":"MX 45191 7-1/2 x 7-1/2","quantity":1,"rate":40,"amount":40,"isUncertain":0,"id":"6a6f0c97678fc762b41ebee1"},{"invoiceId":"6a6f0c97678fc762b41ebee0","description":"MX 45191 6-1/2 x 6-1/2","quantity":1,"rate":40,"amount":40,"isUncertain":0,"id":"6a6f0c97678fc762b41ebee2"},{"invoiceId":"6a6f0c97678fc762b41ebee0","description":"MX 45191 6 x 6","quantity":1,"rate":40,"amount":40,"isUncertain":0,"id":"6a6f0c98678fc762b41ebee3"},{"invoiceId":"6a6f0c97678fc762b41ebee0","description":"47594","quantity":1,"rate":10,"amount":10,"isUncertain":0,"id":"6a6f0c98678fc762b41ebee4"},{"invoiceId":"6a6f0c97678fc762b41ebee0","description":"27744","quantity":1,"rate":20,"amount":20,"isUncertain":0,"id":"6a6f0c98678fc762b41ebee5"},{"invoiceId":"6a6f0c97678fc762b41ebee0","description":"MX 45191 5 x 5 ","quantity":1,"rate":40,"amount":40,"isUncertain":0,"id":"6a6f0c98678fc762b41ebee6"},{"invoiceId":"6a6f0c97678fc762b41ebee0","description":"MX 45191 KAJM","quantity":1,"rate":40,"amount":40,"isUncertain":0,"id":"6a6f0c99678fc762b41ebee7"},{"invoiceId":"6a6f0c97678fc762b41ebee0","description":"MX 45191 J151-6","quantity":1,"rate":40,"amount":40,"isUncertain":0,"id":"6a6f0c99678fc762b41ebee8"},{"invoiceId":"6a6f0c97678fc762b41ebee0","description":"Rm 38","quantity":1,"rate":15,"amount":15,"isUncertain":0,"id":"6a6f0c99678fc762b41ebee9"},{"invoiceId":"6a6f0c97678fc762b41ebee0","description":"Rm 5M","quantity":1,"rate":10,"amount":10,"isUncertain":0,"id":"6a6f0c99678fc762b41ebeea"},{"invoiceId":"6a6f0c97678fc762b41ebee0","description":"Rm 3M","quantity":1,"rate":10,"amount":10,"isUncertain":0,"id":"6a6f0c9a678fc762b41ebeeb"},{"invoiceId":"6a6f0c97678fc762b41ebee0","description":"Rm 8M","quantity":1,"rate":20,"amount":20,"isUncertain":0,"id":"6a6f0c9a678fc762b41ebeec"},{"invoiceId":"6a6f0c97678fc762b41ebee0","description":"Rm J82","quantity":1,"rate":10,"amount":10,"isUncertain":0,"id":"6a6f0c9a678fc762b41ebeed"},{"invoiceId":"6a6f0c97678fc762b41ebee0","description":"27709 JMA","quantity":1,"rate":80,"amount":80,"isUncertain":0,"id":"6a6f0c9a678fc762b41ebeee"},{"invoiceId":"6a6f0c97678fc762b41ebee0","description":"392 J190","quantity":1,"rate":40,"amount":40,"isUncertain":0,"id":"6a6f0c9b678fc762b41ebeef"},{"invoiceId":"6a6f0c97678fc762b41ebee0","description":"27749 5186","quantity":1,"rate":20,"amount":20,"isUncertain":0,"id":"6a6f0c9b678fc762b41ebef0"},{"invoiceId":"6a6f0c97678fc762b41ebee0","description":"Rm J79","quantity":1,"rate":10,"amount":10,"isUncertain":0,"id":"6a6f0c9b678fc762b41ebef1"}]}
+9:31:58 AM [express] POST /api/extract 200 in 3520ms :: {"items":[{"description":"mt 45191","quantity":1,"rate":40,"amount":40,"isUncertain":false},{"description":"[???]","quantity":1,"rate":40,"amount":40,"isUncertain":false},{"description":"[???]","quantity":1,"rate":40,"amount":40,"isUncertain":false},{"description":"27594","quantity":1,"rate":1,"amount":1,"isUncertain":false},{"description":"2709","quantity":1,"rate":19,"amount":19,"isUncertain":false},{"description":"mt 45191","quantity":1,"rate":40,"amount":40,"isUncertain":false},{"description":"mt 45191","quantity":1,"rate":40,"amount":40,"isUncertain":false},{"description":"mx 11","quantity":1,"rate":40,"amount":40,"isUncertain":false},{"description":"Rm 38","quantity":1,"rate":115,"amount":115,"isUncertain":false},{"description":"Rm 5m","quantity":1,"rate":110,"amount":110,"isUncertain":false},{"description":"Rm 5m","quantity":1,"rate":120,"amount":120,"isUncertain":false},{"description":"Rm 8m","quantity":1,"rate":110,"amount":110,"isUncertain":false},{"description":"RM - J32","quantity":1,"rate":180,"amount":180,"isUncertain":false},{"description":"27709","quantity":1,"rate":40,"amount":40,"isUncertain":true},{"description":"392 J190","quantity":1,"rate":40,"amount":40,"isUncertain":true},{"description":"27749 5186","quantity":1,"rate":80,"amount":80,"isUncertain":false}],"grandTotal":895}
+9:32:05 AM [express] POST /api/invoices 201 in 4512ms :: {"invoiceNumber":"INV-47","clientName":"ART FASHION LLC","clientAddress":"Abu Dhabi, UAE","currency":"AED","totalAmount":1055,"status":"draft","imageUrl":null,"createdAt":"2026-08-02T09:32:01.074Z","id":"6a6f0e91975e15454459f2e2","items":[{"invoiceId":"6a6f0e91975e15454459f2e2","description":"mt 45191","quantity":1,"rate":40,"amount":40,"isUncertain":0,"id":"6a6f0e91975e15454459f2e3"},{"invoiceId":"6a6f0e91975e15454459f2e2","description":"[???]","quantity":1,"rate":40,"amount":40,"isUncertain":0,"id":"6a6f0e91975e15454459f2e4"},{"invoiceId":"6a6f0e91975e15454459f2e2","description":"[???]","quantity":1,"rate":40,"amount":40,"isUncertain":0,"id":"6a6f0e91975e15454459f2e5"},{"invoiceId":"6a6f0e91975e15454459f2e2","description":"27594","quantity":1,"rate":1,"amount":1,"isUncertain":0,"id":"6a6f0e92975e15454459f2e6"},{"invoiceId":"6a6f0e91975e15454459f2e2","description":"2709","quantity":1,"rate":19,"amount":19,"isUncertain":0,"id":"6a6f0e92975e15454459f2e7"},{"invoiceId":"6a6f0e91975e15454459f2e2","description":"mt 45191","quantity":1,"rate":40,"amount":40,"isUncertain":0,"id":"6a6f0e92975e15454459f2e8"},{"invoiceId":"6a6f0e91975e15454459f2e2","description":"mt 45191","quantity":1,"rate":40,"amount":40,"isUncertain":0,"id":"6a6f0e92975e15454459f2e9"},{"invoiceId":"6a6f0e91975e15454459f2e2","description":"mx 11","quantity":1,"rate":40,"amount":40,"isUncertain":0,"id":"6a6f0e92975e15454459f2ea"},{"invoiceId":"6a6f0e91975e15454459f2e2","description":"Rm 38","quantity":1,"rate":115,"amount":115,"isUncertain":0,"id":"6a6f0e93975e15454459f2eb"},{"invoiceId":"6a6f0e91975e15454459f2e2","description":"Rm 5m","quantity":1,"rate":110,"amount":110,"isUncertain":0,"id":"6a6f0e93975e15454459f2ec"},{"invoiceId":"6a6f0e91975e15454459f2e2","description":"Rm 5m","quantity":1,"rate":120,"amount":120,"isUncertain":0,"id":"6a6f0e93975e15454459f2ed"},{"invoiceId":"6a6f0e91975e15454459f2e2","description":"Rm 8m","quantity":1,"rate":110,"amount":110,"isUncertain":0,"id":"6a6f0e93975e15454459f2ee"},{"invoiceId":"6a6f0e91975e15454459f2e2","description":"RM - J32","quantity":1,"rate":180,"amount":180,"isUncertain":0,"id":"6a6f0e94975e15454459f2ef"},{"invoiceId":"6a6f0e91975e15454459f2e2","description":"27709","quantity":1,"rate":40,"amount":40,"isUncertain":1,"id":"6a6f0e94975e15454459f2f0"},{"invoiceId":"6a6f0e91975e15454459f2e2","description":"392 J190","quantity":1,"rate":40,"amount":40,"isUncertain":1,"id":"6a6f0e94975e15454459f2f1"},{"invoiceId":"6a6f0e91975e15454459f2e2","description":"27749 5186","quantity":1,"rate":80,"amount":80,"isUncertain":0,"id":"6a6f0e94975e15454459f2f2"}]}
+9:32:05 AM [express] GET /api/invoice-number 200 in 234ms :: {"invoiceNumber":"INV-48"}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[1;1H[0J[2m9:33:51 AM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/index.css, /src/components/invoice-preview.tsx[22m [33m(x2)[39m
+[replit-cartographer] Error processing /home/runner/workspace/client/src/components/invoice-preview.tsx: SyntaxError: Missing catch or finally clause. (48:4)
+    at toParseError [90m(/home/runner/workspace/[39mnode_modules/[4m@babel/parser[24m/src/parse-error.ts:95:45[90m)[39m
+    at raise [90m(/home/runner/workspace/[39mnode_modules/[4m@babel/parser[24m/src/tokenizer/index.ts:1503:19[90m)[39m
+    at parseTryStatement [90m(/home/runner/workspace/[39mnode_modules/[4m@babel/parser[24m/src/parser/statement.ts:1231:12[90m)[39m
+    at parseStatementContent [90m(/home/runner/workspace/[39mnode_modules/[4m@babel/parser[24m/src/parser/statement.ts:544:21[90m)[39m
+    at parseStatementContent [90m(/home/runner/workspace/[39mnode_modules/[4m@babel/parser[24m/src/plugins/typescript/index.ts:3185:20[90m)[39m
+    at parseStatementLike [90m(/home/runner/workspace/[39mnode_modules/[4m@babel/parser[24m/src/parser/statement.ts:477:17[90m)[39m
+    at parseStatementListItem [90m(/home/runner/workspace/[39mnode_modules/[4m@babel/parser[24m/src/parser/statement.ts:426:17[90m)[39m
+    at parseBlockOrModuleBlockBody [90m(/home/runner/workspace/[39mnode_modules/[4m@babel/parser[24m/src/parser/statement.ts:1439:16[90m)[39m
+    at parseBlockBody [90m(/home/runner/workspace/[39mnode_modules/[4m@babel/parser[24m/src/parser/statement.ts:1412:10[90m)[39m
+    at parseBlock [90m(/home/runner/workspace/[39mnode_modules/[4m@babel/parser[24m/src/parser/statement.ts:1380:10[90m)[39m
+    at parseFunctionBody [90m(/home/runner/workspace/[39mnode_modules/[4m@babel/parser[24m/src/parser/expression.ts:2616:24[90m)[39m
+    at parseArrowExpression [90m(/home/runner/workspace/[39mnode_modules/[4m@babel/parser[24m/src/parser/expression.ts:2553:10[90m)[39m
+    at parseAsyncArrowFromCallExpression [90m(/home/runner/workspace/[39mnode_modules/[4m@babel/parser[24m/src/parser/expression.ts:1059:10[90m)[39m
+    at parseAsyncArrowFromCallExpression [90m(/home/runner/workspace/[39mnode_modules/[4m@babel/parser[24m/src/plugins/typescript/index.ts:3687:20[90m)[39m
+    at parseCoverCallAndAsyncArrowHead [90m(/home/runner/workspace/[39mnode_modules/[4m@babel/parser[24m/src/parser/expression.ts:934:27[90m)[39m
+    at parseSubscript [90m(/home/runner/workspace/[39mnode_modules/[4m@babel/parser[24m/src/parser/expression.ts:796:19[90m)[39m
+    at parseSubscript [90m(/home/runner/workspace/[39mnode_modules/[4m@babel/parser[24m/src/plugins/typescript/index.ts:2850:20[90m)[39m
+    at parseSubscripts [90m(/home/runner/workspace/[39mnode_modules/[4m@babel/parser[24m/src/parser/expression.ts:755:19[90m)[39m
+    at parseExprSubscripts [90m(/home/runner/workspace/[39mnode_modules/[4m@babel/parser[24m/src/parser/expression.ts:740:17[90m)[39m
+    at parseUpdate [90m(/home/runner/workspace/[39mnode_modules/[4m@babel/parser[24m/src/parser/expression.ts:713:21[90m)[39m
+    at parseMaybeUnary [90m(/home/runner/workspace/[39mnode_modules/[4m@babel/parser[24m/src/parser/expression.ts:675:23[90m)[39m
+    at parseMaybeUnary [90m(/home/runner/workspace/[39mnode_modules/[4m@babel/parser[24m/src/plugins/typescript/index.ts:3855:20[90m)[39m
+    at parseMaybeUnaryOrPrivate [90m(/home/runner/workspace/[39mnode_modules/[4m@babel/parser[24m/src/parser/expression.ts:409:14[90m)[39m
+    at parseExprOps [90m(/home/runner/workspace/[39mnode_modules/[4m@babel/parser[24m/src/parser/expression.ts:421:23[90m)[39m
+    at parseMaybeConditional [90m(/home/runner/workspace/[39mnode_modules/[4m@babel/parser[24m/src/parser/expression.ts:376:23[90m)[39m
+    at parseMaybeAssign [90m(/home/runner/workspace/[39mnode_modules/[4m@babel/parser[24m/src/parser/expression.ts:301:21[90m)[39m
+    at parseMaybeAssign [90m(/home/runner/workspace/[39mnode_modules/[4m@babel/parser[24m/src/plugins/typescript/index.ts:3727:22[90m)[39m
+    at callback [90m(/home/runner/workspace/[39mnode_modules/[4m@babel/parser[24m/src/parser/expression.ts:257:12[90m)[39m
+    at allowInAnd [90m(/home/runner/workspace/[39mnode_modules/[4m@babel/parser[24m/src/parser/expression.ts:3192:12[90m)[39m
+    at parseMaybeAssignAllowIn [90m(/home/runner/workspace/[39mnode_modules/[4m@babel/parser[24m/src/parser/expression.ts:256:17[90m)[39m
+    at parseMaybeAssignAllowInOrVoidPattern [90m(/home/runner/workspace/[39mnode_modules/[4m@babel/parser[24m/src/parser/expression.ts:3306:17[90m)[39m
+    at parseExprListItem [90m(/home/runner/workspace/[39mnode_modules/[4m@babel/parser[24m/src/parser/expression.ts:2788:18[90m)[39m
+    at parseCallExpressionArguments [90m(/home/runner/workspace/[39mnode_modules/[4m@babel/parser[24m/src/parser/expression.ts:1034:14[90m)[39m
+    at parseCoverCallAndAsyncArrowHead [90m(/home/runner/workspace/[39mnode_modules/[4m@babel/parser[24m/src/parser/expression.ts:914:29[90m)[39m
+    at parseSubscript [90m(/home/runner/workspace/[39mnode_modules/[4m@babel/parser[24m/src/parser/expression.ts:796:19[90m)[39m
+    at parseSubscript [90m(/home/runner/workspace/[39mnode_modules/[4m@babel/parser[24m/src/plugins/typescript/index.ts:2850:20[90m)[39m
+    at parseSubscripts [90m(/home/runner/workspace/[39mnode_modules/[4m@babel/parser[24m/src/parser/expression.ts:755:19[90m)[39m
+    at parseExprSubscripts [90m(/home/runner/workspace/[39mnode_modules/[4m@babel/parser[24m/src/parser/expression.ts:740:17[90m)[39m
+    at parseUpdate [90m(/home/runner/workspace/[39mnode_modules/[4m@babel/parser[24m/src/parser/expression.ts:713:21[90m)[39m
+    at parseMaybeUnary [90m(/home/runner/workspace/[39mnode_modules/[4m@babel/parser[24m/src/parser/expression.ts:675:23[90m)[39m
+    at parseMaybeUnary [90m(/home/runner/workspace/[39mnode_modules/[4m@babel/parser[24m/src/plugins/typescript/index.ts:3855:20[90m)[39m
+    at parseMaybeUnaryOrPrivate [90m(/home/runner/workspace/[39mnode_modules/[4m@babel/parser[24m/src/parser/expression.ts:409:14[90m)[39m
+    at parseExprOps [90m(/home/runner/workspace/[39mnode_modules/[4m@babel/parser[24m/src/parser/expression.ts:421:23[90m)[39m
+    at parseMaybeConditional [90m(/home/runner/workspace/[39mnode_modules/[4m@babel/parser[24m/src/parser/expression.ts:376:23[90m)[39m
+    at parseMaybeAssign [90m(/home/runner/workspace/[39mnode_modules/[4m@babel/parser[24m/src/parser/expression.ts:301:21[90m)[39m
+    at parseMaybeAssign [90m(/home/runner/workspace/[39mnode_modules/[4m@babel/parser[24m/src/plugins/typescript/index.ts:3727:22[90m)[39m
+    at callback [90m(/home/runner/workspace/[39mnode_modules/[4m@babel/parser[24m/src/parser/expression.ts:257:12[90m)[39m
+    at allowInAnd [90m(/home/runner/workspace/[39mnode_modules/[4m@babel/parser[24m/src/parser/expression.ts:3187:16[90m)[39m
+    at parseMaybeAssignAllowIn [90m(/home/runner/workspace/[39mnode_modules/[4m@babel/parser[24m/src/parser/expression.ts:256:17[90m)[39m
+    at parseVar [90m(/home/runner/workspace/[39mnode_modules/[4m@babel/parser[24m/src/parser/statement.ts:1582:18[90m)[39m {
+  code: [32m'BABEL_PARSER_SYNTAX_ERROR'[39m,
+  reasonCode: [32m'NoCatchOrFinally'[39m,
+  loc: Position { line: [33m48[39m, column: [33m4[39m, index: [33m1792[39m },
+  pos: [33m1792[39m,
+  syntaxPlugin: [90mundefined[39m
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[1;1H[0J[2m9:33:51 AM[22m [31m[1m[vite][22m[39m [31mInternal server error: /home/runner/workspace/client/src/components/invoice-preview.tsx: Missing catch or finally clause. (48:4)
+
+[0m [90m 46 |[31m   [90m/* ── PDF GENERATION ── */[31m
+ [90m 47 |[31m   [36mconst[31m generatePDF [33m=[31m useCallback([36masync[31m () [33m=>[31m {
+[31m[1m>[22m[31m[90m 48 |[31m     [36mtry[31m {
+ [90m    |[31m     [31m[1m^[22m[31m
+ [90m 49 |[31m     [36mconst[31m { jsPDF } [33m=[31m [36mawait[31m [36mimport[31m([32m"jspdf"[31m)[33m;[31m
+ [90m 50 |[31m     [36mconst[31m autoTable  [33m=[31m ([36mawait[31m [36mimport[31m([32m"jspdf-autotable"[31m))[33m.[31m[36mdefault[31m[33m;[31m
+ [90m 51 |[31m[0m[39m
+  Plugin: [35mvite:react-babel[39m
+  File: [36m/home/runner/workspace/client/src/components/invoice-preview.tsx[39m:48:4
+[33m  46 |    /* ── PDF GENERATION ── */
+  47 |    const generatePDF = useCallback(async () => {
+  48 |      try {
+     |      ^
+  49 |      const { jsPDF } = await import("jspdf");
+  50 |      const autoTable  = (await import("jspdf-autotable")).default;[39m
+      at toParseError (/home/runner/workspace/node_modules/@babel/parser/src/parse-error.ts:95:45)
+      at raise (/home/runner/workspace/node_modules/@babel/parser/src/tokenizer/index.ts:1503:19)
+      at parseTryStatement (/home/runner/workspace/node_modules/@babel/parser/src/parser/statement.ts:1231:12)
+      at parseStatementContent (/home/runner/workspace/node_modules/@babel/parser/src/parser/statement.ts:544:21)
+      at parseStatementContent (/home/runner/workspace/node_modules/@babel/parser/src/plugins/typescript/index.ts:3185:20)
+      at parseStatementLike (/home/runner/workspace/node_modules/@babel/parser/src/parser/statement.ts:477:17)
+      at parseStatementListItem (/home/runner/workspace/node_modules/@babel/parser/src/parser/statement.ts:426:17)
+      at parseBlockOrModuleBlockBody (/home/runner/workspace/node_modules/@babel/parser/src/parser/statement.ts:1439:16)
+      at parseBlockBody (/home/runner/workspace/node_modules/@babel/parser/src/parser/statement.ts:1412:10)
+      at parseBlock (/home/runner/workspace/node_modules/@babel/parser/src/parser/statement.ts:1380:10)
+      at parseFunctionBody (/home/runner/workspace/node_modules/@babel/parser/src/parser/expression.ts:2616:24)
+      at parseArrowExpression (/home/runner/workspace/node_modules/@babel/parser/src/parser/expression.ts:2553:10)
+      at parseAsyncArrowFromCallExpression (/home/runner/workspace/node_modules/@babel/parser/src/parser/expression.ts:1059:10)
+      at parseAsyncArrowFromCallExpression (/home/runner/workspace/node_modules/@babel/parser/src/plugins/typescript/index.ts:3687:20)
+      at parseCoverCallAndAsyncArrowHead (/home/runner/workspace/node_modules/@babel/parser/src/parser/expression.ts:934:27)
+      at parseSubscript (/home/runner/workspace/node_modules/@babel/parser/src/parser/expression.ts:796:19)
+      at parseSubscript (/home/runner/workspace/node_modules/@babel/parser/src/plugins/typescript/index.ts:2850:20)
+      at parseSubscripts (/home/runner/workspace/node_modules/@babel/parser/src/parser/expression.ts:755:19)
+      at parseExprSubscripts (/home/runner/workspace/node_modules/@babel/parser/src/parser/expression.ts:740:17)
+      at parseUpdate (/home/runner/workspace/node_modules/@babel/parser/src/parser/expression.ts:713:21)
+      at parseMaybeUnary (/home/runner/workspace/node_modules/@babel/parser/src/parser/expression.ts:675:23)
+      at parseMaybeUnary (/home/runner/workspace/node_modules/@babel/parser/src/plugins/typescript/index.ts:3855:20)
+      at parseMaybeUnaryOrPrivate (/home/runner/workspace/node_modules/@babel/parser/src/parser/expression.ts:409:14)
+      at parseExprOps (/home/runner/workspace/node_modules/@babel/parser/src/parser/expression.ts:421:23)
+      at parseMaybeConditional (/home/runner/workspace/node_modules/@babel/parser/src/parser/expression.ts:376:23)
+      at parseMaybeAssign (/home/runner/workspace/node_modules/@babel/parser/src/parser/expression.ts:301:21)
+      at parseMaybeAssign (/home/runner/workspace/node_modules/@babel/parser/src/plugins/typescript/index.ts:3727:22)
+      at callback (/home/runner/workspace/node_modules/@babel/parser/src/parser/expression.ts:257:12)
+      at allowInAnd (/home/runner/workspace/node_modules/@babel/parser/src/parser/expression.ts:3192:12)
+      at parseMaybeAssignAllowIn (/home/runner/workspace/node_modules/@babel/parser/src/parser/expression.ts:256:17)
+      at parseMaybeAssignAllowInOrVoidPattern (/home/runner/workspace/node_modules/@babel/parser/src/parser/expression.ts:3306:17)
+      at parseExprListItem (/home/runner/workspace/node_modules/@babel/parser/src/parser/expression.ts:2788:18)
+      at parseCallExpressionArguments (/home/runner/workspace/node_modules/@babel/parser/src/parser/expression.ts:1034:14)
+      at parseCoverCallAndAsyncArrowHead (/home/runner/workspace/node_modules/@babel/parser/src/parser/expression.ts:914:29)
+      at parseSubscript (/home/runner/workspace/node_modules/@babel/parser/src/parser/expression.ts:796:19)
+      at parseSubscript (/home/runner/workspace/node_modules/@babel/parser/src/plugins/typescript/index.ts:2850:20)
+      at parseSubscripts (/home/runner/workspace/node_modules/@babel/parser/src/parser/expression.ts:755:19)
+      at parseExprSubscripts (/home/runner/workspace/node_modules/@babel/parser/src/parser/expression.ts:740:17)
+      at parseUpdate (/home/runner/workspace/node_modules/@babel/parser/src/parser/expression.ts:713:21)
+      at parseMaybeUnary (/home/runner/workspace/node_modules/@babel/parser/src/parser/expression.ts:675:23)
+      at parseMaybeUnary (/home/runner/workspace/node_modules/@babel/parser/src/plugins/typescript/index.ts:3855:20)
+      at parseMaybeUnaryOrPrivate (/home/runner/workspace/node_modules/@babel/parser/src/parser/expression.ts:409:14)
+      at parseExprOps (/home/runner/workspace/node_modules/@babel/parser/src/parser/expression.ts:421:23)
+      at parseMaybeConditional (/home/runner/workspace/node_modules/@babel/parser/src/parser/expression.ts:376:23)
+      at parseMaybeAssign (/home/runner/workspace/node_modules/@babel/parser/src/parser/expression.ts:301:21)
+      at parseMaybeAssign (/home/runner/workspace/node_modules/@babel/parser/src/plugins/typescript/index.ts:3727:22)
+      at callback (/home/runner/workspace/node_modules/@babel/parser/src/parser/expression.ts:257:12)
+      at allowInAnd (/home/runner/workspace/node_modules/@babel/parser/src/parser/expression.ts:3187:16)
+      at parseMaybeAssignAllowIn (/home/runner/workspace/node_modules/@babel/parser/src/parser/expression.ts:256:17)
+      at parseVar (/home/runner/workspace/node_modules/@babel/parser/src/parser/statement.ts:1582:18)
+[1G[0K⠙[1G[0K

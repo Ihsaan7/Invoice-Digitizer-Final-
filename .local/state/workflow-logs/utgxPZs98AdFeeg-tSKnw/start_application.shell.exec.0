@@ -1,0 +1,21 @@
+
+> rest-express@1.0.0 dev
+> NODE_ENV=development tsx server/index.ts
+
+[1G[0KSeed error: Error: MONGODB_URI is not set. Add it to your environment secrets to connect to MongoDB.
+    at connectMongo [90m(/home/runner/workspace/[39mserver/mongodb.ts:13:13[90m)[39m
+    at seedDatabase [90m(/home/runner/workspace/[39mserver/seed.ts:5:9[90m)[39m
+    at <anonymous> [90m(/home/runner/workspace/[39mserver/index.ts:64:9[90m)[39m
+    at <anonymous> [90m(/home/runner/workspace/[39mserver/index.ts:105:1[90m)[39m
+[90m    at ModuleJob.run (node:internal/modules/esm/module_job:325:25)[39m
+[90m    at async ModuleLoader.import (node:internal/modules/esm/loader:606:24)[39m
+[90m    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:117:5)[39m
+[2m2:28:02 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m Re-optimizing dependencies because lockfile has changed
+2:28:02 PM [express] serving on port 5000
+Browserslist: browsers data (caniuse-lite) is 9 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+A PostCSS plugin did not pass the `from` option to `postcss.parse`. This may cause imported assets to be incorrectly transformed. If you've recently added a PostCSS plugin that raised this warning, please contact the package author to fix the issue.
+2:28:14 PM [express] GET /api/invoice-number 500 in 3ms :: {"error":"Failed to get invoice number"}
+3:02:16 PM [express] GET /api/invoice-number 500 in 4ms :: {"error":"Failed to get invoice number"}
