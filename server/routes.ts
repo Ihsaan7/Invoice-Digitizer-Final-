@@ -4,11 +4,16 @@ import { storage } from "./storage";
 import OpenAI from "openai";
 import multer from "multer";
 
-const apiKey = process.env.OPENAI_API_KEY || process.env.AI_INTEGRATIONS_OPENAI_API_KEY || "dummy-key";
-const openai = new OpenAI({
-  apiKey,
-  baseURL: process.env.AI_INTEGRATIONS_OPENAI_BASE_URL,
-});
+function getOpenAIClient(): OpenAI | null {
+  const apiKey = process.env.OPENAI_API_KEY || process.env.AI_INTEGRATIONS_OPENAI_API_KEY;
+  if (!apiKey || apiKey === "dummy-key") {
+    return null;
+  }
+  return new OpenAI({
+    apiKey,
+    baseURL: process.env.AI_INTEGRATIONS_OPENAI_BASE_URL || undefined,
+  });
+}
 
 const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 10 * 1024 * 1024 } });
 
@@ -124,10 +129,10 @@ export async function registerRoutes(
         return res.status(400).json({ error: "No image uploaded" });
       }
 
-      const hasApiKey = Boolean(process.env.OPENAI_API_KEY || process.env.AI_INTEGRATIONS_OPENAI_API_KEY);
+      const openai = getOpenAIClient();
 
-      if (!hasApiKey) {
-        console.warn("[OCR] No OPENAI_API_KEY found in environment. Using demo extraction fallback.");
+      if (!openai) {
+        console.warn("[OCR] No valid OPENAI_API_KEY found in environment. Using demo extraction fallback.");
         const demoItems = [
           { description: "MX-4495 MOD.no", quantity: 1, rate: 200, amount: 200, isUncertain: false },
           { description: "MX-3220 MOD.no", quantity: 1, rate: 1125, amount: 1125, isUncertain: false },

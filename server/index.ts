@@ -1,17 +1,9 @@
+import "./env";
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { serveStatic } from "./static";
 import { createServer } from "http";
 import { seedDatabase } from "./seed";
-import fs from "fs";
-
-if (fs.existsSync(".env")) {
-  try {
-    process.loadEnvFile();
-  } catch {
-    // ignore
-  }
-}
 
 const app = express();
 const httpServer = createServer(app);
