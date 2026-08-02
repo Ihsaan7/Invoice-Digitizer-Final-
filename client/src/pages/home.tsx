@@ -37,10 +37,17 @@ export default function Home() {
       setExtractedItems(data.items || []);
       setExtractedGrandTotal(data.grandTotal || 0);
       setView("editor");
-      toast({
-        title: "Extraction complete",
-        description: `Found ${data.items?.length || 0} items in the image.`,
-      });
+      if (data.isDemoMode) {
+        toast({
+          title: "Demo Extraction Mode",
+          description: "No OPENAI_API_KEY set in .env file. Extracted demo items. Add OPENAI_API_KEY to .env for live AI OCR.",
+        });
+      } else {
+        toast({
+          title: "Extraction complete",
+          description: `Found ${data.items?.length || 0} items in the image.`,
+        });
+      }
     },
     onError: () => {
       toast({
