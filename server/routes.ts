@@ -2,7 +2,16 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import OpenAI from "openai";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 import multer from "multer";
+
+function getGeminiClient(): GoogleGenerativeAI | null {
+  const apiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY;
+  if (!apiKey || apiKey === "dummy-key") {
+    return null;
+  }
+  return new GoogleGenerativeAI(apiKey);
+}
 
 function getOpenAIClient(): OpenAI | null {
   const apiKey = process.env.OPENAI_API_KEY || process.env.AI_INTEGRATIONS_OPENAI_API_KEY;
@@ -129,32 +138,7 @@ export async function registerRoutes(
         return res.status(400).json({ error: "No image uploaded" });
       }
 
-      const openai = getOpenAIClient();
-
-      if (!openai) {
-        console.warn("[OCR] No valid OPENAI_API_KEY found in environment. Using demo extraction fallback.");
-        const demoItems = [
-          { description: "MX-4495 MOD.no", quantity: 1, rate: 200, amount: 200, isUncertain: false },
-          { description: "MX-3220 MOD.no", quantity: 1, rate: 1125, amount: 1125, isUncertain: false },
-          { description: "MX-7810 MOD.no", quantity: 1, rate: 1125, amount: 1125, isUncertain: false },
-          { description: "MX-1150 MOD.no", quantity: 1, rate: 750, amount: 750, isUncertain: false },
-        ];
-        return res.json({
-          items: demoItems,
-          grandTotal: 3200,
-          isDemoMode: true,
-        });
-      }
-
-      const base64Image = req.file.buffer.toString("base64");
-      const mimeType = req.file.mimetype || "image/jpeg";
-
-      const response = await openai.chat.completions.create({
-        model: "gpt-4o",
-        messages: [
-          {
-            role: "system",
-            content: `You are an OCR specialist that extracts data from handwritten invoice/bazaar notes.
+      const ocrPrompt = `You are an OCR specialist that extracts data from handwritten invoice/bazaar notes.
 
 CRITICAL RULES — follow these exactly:
 
@@ -174,47 +158,99 @@ Return ONLY valid JSON in this exact format:
     { "description": "string", "rate": number, "amount": number, "isUncertain": boolean }
   ],
   "grandTotal": number
-}`
-          },
-          {
-            role: "user",
-            content: [
-              {
-                type: "text",
-                text: "Extract all items from this handwritten invoice note. Remember: the LAST number is the grand total, not a line item. Return the data as JSON."
-              },
-              {
-                type: "image_url",
-                image_url: { url: `data:${mimeType};base64,${base64Image}` }
-              }
-            ]
-          }
-        ],
-        response_format: { type: "json_object" },
-        max_tokens: 4096,
-      });
+}`;
 
-      const content = response.choices[0]?.message?.content || "{}";
-      let parsed: any;
-      try {
-        parsed = JSON.parse(content);
-      } catch {
-        parsed = { items: [], grandTotal: 0 };
+      // ── Option A: 100% FREE Google Gemini Vision API (No credit card needed) ──
+      const gemini = getGeminiClient();
+      if (gemini) {
+        try {
+          const model = gemini.getGenerativeModel({ model: "gemini-1.5-flash" });
+          const imagePart = {
+            inlineData: {
+              data: req.file.buffer.toString("base64"),
+              mimeType: req.file.mimetype || "image/jpeg",
+            },
+          };
+
+          const result = await model.generateContent([ocrPrompt, imagePart]);
+          const responseText = result.response.text();
+          const cleanJson = responseText.replace(/```json/gi, "").replace(/```/gi, "").trim();
+          const parsed = JSON.parse(cleanJson);
+
+          const items = (parsed.items || []).map((item: any) => ({
+            description: String(item.description || "[???]"),
+            quantity: 1,
+            rate: Number(item.rate) || 0,
+            amount: Number(item.amount) || Number(item.rate) || 0,
+            isUncertain: Boolean(item.isUncertain),
+          }));
+
+          const grandTotal = Number(parsed.grandTotal) || items.reduce((s: number, i: any) => s + i.amount, 0);
+
+          return res.json({ items, grandTotal, isDemoMode: false, provider: "gemini" });
+        } catch (geminiErr) {
+          console.error("[OCR] Gemini extraction error, falling back:", geminiErr);
+        }
       }
 
-      const items = (parsed.items || []).map((item: any) => ({
-        description: String(item.description || "[???]"),
-        quantity: 1,
-        rate: Number(item.rate) || 0,
-        amount: Number(item.amount) || Number(item.rate) || 0,
-        isUncertain: Boolean(item.isUncertain),
-      }));
+      // ── Option B: OpenAI GPT-4o ──
+      const openai = getOpenAIClient();
+      if (openai) {
+        const base64Image = req.file.buffer.toString("base64");
+        const mimeType = req.file.mimetype || "image/jpeg";
 
-      const grandTotal = Number(parsed.grandTotal) || items.reduce((s: number, i: any) => s + i.amount, 0);
+        const response = await openai.chat.completions.create({
+          model: "gpt-4o",
+          messages: [
+            { role: "system", content: ocrPrompt },
+            {
+              role: "user",
+              content: [
+                { type: "text", text: "Extract all items from this handwritten invoice note. Return data as JSON." },
+                { type: "image_url", image_url: { url: `data:${mimeType};base64,${base64Image}` } }
+              ]
+            }
+          ],
+          response_format: { type: "json_object" },
+          max_tokens: 4096,
+        });
 
-      res.json({ items, grandTotal, isDemoMode: false });
-    } catch (error) {
-      console.error("[OCR] OpenAI Extraction error (falling back to demo mode):", error);
+        const content = response.choices[0]?.message?.content || "{}";
+        let parsed: any;
+        try {
+          parsed = JSON.parse(content);
+        } catch {
+          parsed = { items: [], grandTotal: 0 };
+        }
+
+        const items = (parsed.items || []).map((item: any) => ({
+          description: String(item.description || "[???]"),
+          quantity: 1,
+          rate: Number(item.rate) || 0,
+          amount: Number(item.amount) || Number(item.rate) || 0,
+          isUncertain: Boolean(item.isUncertain),
+        }));
+
+        const grandTotal = Number(parsed.grandTotal) || items.reduce((s: number, i: any) => s + i.amount, 0);
+
+        return res.json({ items, grandTotal, isDemoMode: false, provider: "openai" });
+      }
+
+      // ── Option C: Demo Mode (No API keys or API errors) ──
+      console.warn("[OCR] Using demo extraction mode.");
+      const demoItems = [
+        { description: "MX-4495 MOD.no", quantity: 1, rate: 200, amount: 200, isUncertain: false },
+        { description: "MX-3220 MOD.no", quantity: 1, rate: 1125, amount: 1125, isUncertain: false },
+        { description: "MX-7810 MOD.no", quantity: 1, rate: 1125, amount: 1125, isUncertain: false },
+        { description: "MX-1150 MOD.no", quantity: 1, rate: 750, amount: 750, isUncertain: false },
+      ];
+      return res.json({
+        items: demoItems,
+        grandTotal: 3200,
+        isDemoMode: true,
+      });
+    } catch (error: any) {
+      console.error("[OCR] Extraction exception:", error);
       const demoItems = [
         { description: "MX-4495 MOD.no", quantity: 1, rate: 200, amount: 200, isUncertain: false },
         { description: "MX-3220 MOD.no", quantity: 1, rate: 1125, amount: 1125, isUncertain: false },

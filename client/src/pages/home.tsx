@@ -37,7 +37,12 @@ export default function Home() {
       setExtractedItems(data.items || []);
       setExtractedGrandTotal(data.grandTotal || 0);
       setView("editor");
-      if (data.isDemoMode) {
+      if (data.quotaExhausted) {
+        toast({
+          title: "OpenAI Account Credit Exhausted ($0 Balance)",
+          description: "Your OpenAI account has $0 prepaid credits. Extracted demo items instead. Add $5 credits at platform.openai.com/billing to use live AI OCR.",
+        });
+      } else if (data.isDemoMode) {
         toast({
           title: "Demo Extraction Mode",
           description: "No OPENAI_API_KEY set in .env file. Extracted demo items. Add OPENAI_API_KEY to .env for live AI OCR.",
