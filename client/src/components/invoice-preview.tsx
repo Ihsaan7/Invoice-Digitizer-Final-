@@ -1,5 +1,5 @@
 import { useCallback, useState } from "react";
-import { ArrowLeft, Download, Plus, AlertTriangle } from "lucide-react";
+import { ArrowLeft, Download, Plus, AlertTriangle, Printer } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -44,18 +44,19 @@ export function InvoicePreview({ invoice, onBack, onNewScan }: InvoicePreviewPro
   const [editedDate, setEditedDate] = useState(toDateInputValue(invoice.createdAt));
 
   /* ── PDF GENERATION ── */
-  const generatePDF = useCallback(async () => {
+  const generatePDF = useCallback(async (action: "download" | "preview" | "print" = "download") => {
     try {
-    const { jsPDF } = await import("jspdf");
-    const autoTable  = (await import("jspdf-autotable")).default;
+      const { jsPDF } = await import("jspdf");
+      const autoTableModule = await import("jspdf-autotable");
+      const autoTable = autoTableModule.default || (autoTableModule as any);
 
-    const doc  = new jsPDF();
-    const pageW = doc.internal.pageSize.getWidth();
-    const pageH = doc.internal.pageSize.getHeight();
-    const L     = 18;
-    const R     = pageW - 18;
+      const doc = new jsPDF();
+      const pageW = doc.internal.pageSize.getWidth();
+      const pageH = doc.internal.pageSize.getHeight();
+      const L     = 18;
+      const R     = pageW - 18;
 
-    // ── Brand colors from logo: navy, teal, gold ──
+      // ── Brand colors from logo: navy, teal, gold ──
     const NAVY   = [21, 40, 82]   as [number,number,number];
     const TEAL   = [0, 128, 115]  as [number,number,number];
     const GOLD   = [183, 138, 0]  as [number,number,number];
@@ -252,22 +253,19 @@ export function InvoicePreview({ invoice, onBack, onNewScan }: InvoicePreviewPro
       { align: "center" }
     );
 
-    // Use data URI to open PDF in a new tab — this bypasses the Edge/Acrobat
-    // extension bug where downloaded file:// PDFs render blank.
-    // The user can then use the browser's built-in "Save" button if they want a file.
-    const dataUri = doc.output("datauristring");
-    const win = window.open("", "_blank");
-    if (win) {
-      win.document.write(
-        `<html><head><title>${editedInvoiceNumber}</title></head>` +
-        `<body style="margin:0;padding:0;height:100vh;">` +
-        `<embed src="${dataUri}" type="application/pdf" width="100%" height="100%" />` +
-        `</body></html>`
-      );
-      win.document.close();
-    } else {
-      // Popup blocked — fall back to direct download
+    // Convert PDF to Blob and Blob URL for reliable browser rendering & printing
+    const pdfBlob = doc.output("blob");
+    const blobUrl = URL.createObjectURL(pdfBlob);
+
+    if (action === "download") {
       doc.save(`${editedInvoiceNumber}.pdf`);
+    } else {
+      // "preview" or "print": Open Blob URL in new tab for native PDF viewer & printing
+      const pdfWindow = window.open(blobUrl, "_blank");
+      if (!pdfWindow) {
+        // Fallback if popup blocked
+        doc.save(`${editedInvoiceNumber}.pdf`);
+      }
     }
     } catch (err) {
       console.error("[PDF] generation error:", err);
@@ -318,7 +316,16 @@ export function InvoicePreview({ invoice, onBack, onNewScan }: InvoicePreviewPro
             New Scan
           </Button>
           <Button
-            onClick={generatePDF}
+            variant="outline"
+            onClick={() => generatePDF("print")}
+            className="gap-2"
+            data-testid="button-print-pdf"
+          >
+            <Printer className="w-4 h-4" />
+            Print PDF
+          </Button>
+          <Button
+            onClick={() => generatePDF("download")}
             className="gap-2"
             data-testid="button-generate-pdf"
           >

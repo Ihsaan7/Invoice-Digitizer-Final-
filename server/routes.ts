@@ -4,8 +4,9 @@ import { storage } from "./storage";
 import OpenAI from "openai";
 import multer from "multer";
 
+const apiKey = process.env.OPENAI_API_KEY || process.env.AI_INTEGRATIONS_OPENAI_API_KEY || "dummy-key";
 const openai = new OpenAI({
-  apiKey: process.env.AI_INTEGRATIONS_OPENAI_API_KEY,
+  apiKey,
   baseURL: process.env.AI_INTEGRATIONS_OPENAI_BASE_URL,
 });
 

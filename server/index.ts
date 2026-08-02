@@ -61,7 +61,11 @@ app.use((req, res, next) => {
 });
 
 (async () => {
-  await seedDatabase().catch((err) => console.error("Seed error:", err));
+  if (process.env.MONGODB_URI) {
+    await seedDatabase().catch((err) => console.error("Seed error:", err));
+  } else {
+    log("Running with in-memory storage (MONGODB_URI not set)");
+  }
   await registerRoutes(httpServer, app);
 
   app.use((err: any, _req: Request, res: Response, next: NextFunction) => {
@@ -96,7 +100,6 @@ app.use((req, res, next) => {
     {
       port,
       host: "0.0.0.0",
-      reusePort: true,
     },
     () => {
       log(`serving on port ${port}`);

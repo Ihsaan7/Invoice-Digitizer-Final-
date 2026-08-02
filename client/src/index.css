@@ -308,3 +308,27 @@
     inset: -1px;
   }
 }
+
+/* ─── MEDIA PRINT STYLES ────────────────────────────────────── */
+@media print {
+  body {
+    background: white !important;
+    color: black !important;
+  }
+  header, nav, button, .no-print {
+    display: none !important;
+  }
+  .animate-slide-up, .animate-slide-down, .animate-slide-in-right, .animate-slide-in-left {
+    animation: none !important;
+  }
+  .max-w-4xl {
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  .bg-card {
+    border: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+  }
+}
