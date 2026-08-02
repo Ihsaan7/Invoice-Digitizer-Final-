@@ -251,7 +251,17 @@ export function InvoicePreview({ invoice, onBack, onNewScan }: InvoicePreviewPro
       { align: "center" }
     );
 
-    doc.save(`${editedInvoiceNumber}.pdf`);
+    // Open as blob URL in a new tab — avoids the file:// security block
+    // that causes blank PDFs when Edge/Acrobat extension intercepts the download
+    const blob = doc.output("blob");
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement("a");
+    a.href     = url;
+    a.download = `${editedInvoiceNumber}.pdf`;
+    a.click();
+    // Also open in new tab so it can be viewed inline (not blocked by file:// origin)
+    window.open(url, "_blank");
+    setTimeout(() => URL.revokeObjectURL(url), 60_000);
   }, [invoice, total, editedInvoiceNumber, editedDate]);
 
   /* ── ON-SCREEN PREVIEW ── */
