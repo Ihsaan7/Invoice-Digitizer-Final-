@@ -2,15 +2,15 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import OpenAI from "openai";
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { GoogleGenAI } from "@google/genai";
 import multer from "multer";
 
-function getGeminiClient(): GoogleGenerativeAI | null {
+function getGeminiClient(): GoogleGenAI | null {
   const apiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY;
   if (!apiKey || apiKey === "dummy-key") {
     return null;
   }
-  return new GoogleGenerativeAI(apiKey);
+  return new GoogleGenAI({ apiKey });
 }
 
 function getOpenAIClient(): OpenAI | null {
@@ -72,7 +72,7 @@ export async function registerRoutes(
           await storage.createInvoiceItem({
             invoiceId: invoice.id,
             description: item.description,
-            quantity: 1,
+            quantity: item.quantity ?? 1,
             rate: item.rate,
             amount: item.amount ?? item.rate,
             isUncertain: item.isUncertain ? 1 : 0,
@@ -105,7 +105,7 @@ export async function registerRoutes(
           await storage.createInvoiceItem({
             invoiceId: id,
             description: item.description,
-            quantity: 1,
+            quantity: item.quantity ?? 1,
             rate: item.rate,
             amount: item.amount ?? item.rate,
             isUncertain: item.isUncertain ? 1 : 0,
@@ -160,20 +160,24 @@ Return ONLY valid JSON in this exact format:
   "grandTotal": number
 }`;
 
-      // ── Option A: 100% FREE Google Gemini Vision API (No credit card needed) ──
+      // ── Option A: Google Gemini Vision API ──
       const gemini = getGeminiClient();
       if (gemini) {
         try {
-          const model = gemini.getGenerativeModel({ model: "gemini-flash-latest" });
-          const imagePart = {
-            inlineData: {
-              data: req.file.buffer.toString("base64"),
-              mimeType: req.file.mimetype || "image/jpeg",
-            },
-          };
+          const response = await gemini.models.generateContent({
+            model: "gemini-2.5-flash",
+            contents: [
+              ocrPrompt,
+              {
+                inlineData: {
+                  data: req.file.buffer.toString("base64"),
+                  mimeType: req.file.mimetype || "image/jpeg",
+                },
+              },
+            ],
+          });
 
-          const result = await model.generateContent([ocrPrompt, imagePart]);
-          const responseText = result.response.text();
+          const responseText = response.text || "";
           const cleanJson = responseText.replace(/```json/gi, "").replace(/```/gi, "").trim();
           const parsed = JSON.parse(cleanJson);
 

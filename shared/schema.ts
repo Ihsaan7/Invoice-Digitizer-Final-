@@ -1,7 +1,5 @@
 import { z } from "zod";
 
-export * from "./models/chat";
-
 export const insertInvoiceSchema = z.object({
   invoiceNumber: z.string(),
   clientName: z.string().default("ART FASHION LLC"),

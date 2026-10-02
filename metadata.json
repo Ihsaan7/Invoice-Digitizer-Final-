@@ -1,0 +1,6 @@
+{
+  "name": "DigiBill - Digital Invoice Solutions",
+  "description": "Digitize handwritten invoice notes into professional invoices instantly. AI-powered OCR with PDF generation.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

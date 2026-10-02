@@ -50,223 +50,232 @@ export function InvoicePreview({ invoice, onBack, onNewScan }: InvoicePreviewPro
       const autoTableModule = await import("jspdf-autotable");
       const autoTable = autoTableModule.default || (autoTableModule as any);
 
-      const doc = new jsPDF();
+      const doc = new jsPDF({
+        orientation: "portrait",
+        unit: "mm",
+        format: "a4",
+      });
       const pageW = doc.internal.pageSize.getWidth();
       const pageH = doc.internal.pageSize.getHeight();
-      const L     = 18;
-      const R     = pageW - 18;
+      const L     = 16;
+      const R     = pageW - 16;
 
       // ── Brand colors from logo: navy, teal, gold ──
-    const NAVY   = [21, 40, 82]   as [number,number,number];
-    const TEAL   = [0, 128, 115]  as [number,number,number];
-    const GOLD   = [183, 138, 0]  as [number,number,number];
-    const GRAY   = [100, 110, 125] as [number,number,number];
-    const DARK   = [25, 30, 42]   as [number,number,number];
-    const LGRAY  = [210, 215, 225] as [number,number,number];
+      const NAVY   = [21, 40, 82]   as [number,number,number];
+      const TEAL   = [0, 128, 115]  as [number,number,number];
+      const GOLD   = [183, 138, 0]  as [number,number,number];
+      const GRAY   = [100, 110, 125] as [number,number,number];
+      const DARK   = [25, 30, 42]   as [number,number,number];
+      const LGRAY  = [215, 220, 228] as [number,number,number];
 
-    // ── LOGO IMAGE (top-left) — preserve aspect ratio, don't stretch ──
-    const maxLogoW = 22;
-    const maxLogoH = 22;
-    let logoW = maxLogoW;
-    let logoH = maxLogoH;
-    try {
-      const logoBase64 = await imgToBase64(logoSrc);
-      const props = doc.getImageProperties(logoBase64);
-      const ratio = props.width / props.height;
-      if (ratio >= 1) {
+      // ── LOGO IMAGE (top-left) ──
+      const maxLogoW = 18;
+      const maxLogoH = 18;
+      let logoW = maxLogoW;
+      let logoH = maxLogoH;
+      try {
+        const logoBase64 = await imgToBase64(logoSrc);
+        const props = doc.getImageProperties(logoBase64);
+        const ratio = props.width / props.height;
+        if (ratio >= 1) {
+          logoW = maxLogoW;
+          logoH = maxLogoW / ratio;
+        } else {
+          logoH = maxLogoH;
+          logoW = maxLogoH * ratio;
+        }
+        const logoY = 9 + (maxLogoH - logoH) / 2;
+        doc.addImage(logoBase64, "PNG", L, logoY, logoW, logoH);
+      } catch {
+        doc.setFillColor(...NAVY);
+        doc.roundedRect(L, 9, maxLogoW, maxLogoH, 2, 2, "F");
         logoW = maxLogoW;
-        logoH = maxLogoW / ratio;
-      } else {
-        logoH = maxLogoH;
-        logoW = maxLogoH * ratio;
       }
-      // vertically center the logo within the max box so text baseline aligns consistently
-      const logoY = 10 + (maxLogoH - logoH) / 2;
-      doc.addImage(logoBase64, "PNG", L, logoY, logoW, logoH);
-    } catch {
-      // fallback square if image fails
-      doc.setFillColor(...NAVY);
-      doc.roundedRect(L, 10, maxLogoW, maxLogoH, 2, 2, "F");
-      logoW = maxLogoW;
-    }
 
-    // Company info (right of logo) — offset based on actual logo width
-    const infoX = L + logoW + 5;
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(11);
-    doc.setTextColor(...NAVY);
-    doc.text(CO_NAME, infoX, 17);
+      // Company info (right of logo)
+      const infoX = L + logoW + 4;
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(10.5);
+      doc.setTextColor(...NAVY);
+      doc.text(CO_NAME, infoX, 13.5);
 
-    doc.setFont("helvetica", "normal");
-    doc.setFontSize(7.5);
-    doc.setTextColor(...GRAY);
-    doc.text(CO_CITY,  infoX, 22.5);
-    doc.text(CO_PHONE, infoX, 27);
-    doc.text(CO_EMAIL, infoX, 31.5);
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(7);
+      doc.setTextColor(...GRAY);
+      doc.text(CO_CITY,  infoX, 17.5);
+      doc.text(CO_PHONE, infoX, 21.5);
+      doc.text(CO_EMAIL, infoX, 25.5);
 
-    // ── INVOICE TITLE — top-right, single line "INVOICE #44" ──
-    const invNum = editedInvoiceNumber.replace("INV-", "");
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(9);
-    doc.setTextColor(...TEAL);
-    doc.text("INVOICE", R, 18, { align: "right" });
+      // ── INVOICE TITLE — top-right ──
+      const invNum = editedInvoiceNumber.replace("INV-", "");
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(8);
+      doc.setTextColor(...TEAL);
+      doc.text("INVOICE", R, 13.5, { align: "right" });
 
-    doc.setFontSize(26);
-    doc.setTextColor(...NAVY);
-    doc.text(`#${invNum}`, R, 32, { align: "right" });
+      doc.setFontSize(22);
+      doc.setTextColor(...NAVY);
+      doc.text(`#${invNum}`, R, 24.5, { align: "right" });
 
-    // Separator
-    doc.setDrawColor(...LGRAY);
-    doc.setLineWidth(0.5);
-    doc.line(L, 38, R, 38);
+      // First Separator line
+      doc.setDrawColor(...LGRAY);
+      doc.setLineWidth(0.4);
+      doc.line(L, 29, R, 29);
 
-    // ── BILLING SECTION — 2 columns, balanced ──
-    const colR = pageW / 2 + 5;
-    const secY = 46;
+      // ── BILLING & METADATA SECTION — balanced single-row 3 columns ──
+      const secY = 34.5;
+      const colMid = 100;
+      const colRight = 155;
 
-    // LEFT: Billed To
-    doc.setFontSize(7);
-    doc.setFont("helvetica", "bold");
-    doc.setTextColor(...TEAL);
-    doc.text("BILLED TO", L, secY);
+      // Col 1: Billed To
+      doc.setFontSize(6.8);
+      doc.setFont("helvetica", "bold");
+      doc.setTextColor(...TEAL);
+      doc.text("BILLED TO", L, secY);
 
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(10.5);
-    doc.setTextColor(...DARK);
-    doc.text(invoice.clientName, L, secY + 7);
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(9);
+      doc.setTextColor(...DARK);
+      doc.text(invoice.clientName, L, secY + 4.5);
 
-    doc.setFont("helvetica", "normal");
-    doc.setFontSize(8.5);
-    doc.setTextColor(...GRAY);
-    doc.text(invoice.clientAddress, L, secY + 13.5);
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(7.5);
+      doc.setTextColor(...GRAY);
+      doc.text(invoice.clientAddress, L, secY + 8.5);
 
-    // RIGHT: Invoice Number + Date Issued only (no Due Date)
-    let rY = secY;
+      // Col 2: Invoice Number
+      doc.setFontSize(6.8);
+      doc.setFont("helvetica", "bold");
+      doc.setTextColor(...TEAL);
+      doc.text("INVOICE NUMBER", colMid, secY);
 
-    // Invoice Number
-    doc.setFontSize(7);
-    doc.setFont("helvetica", "bold");
-    doc.setTextColor(...TEAL);
-    doc.text("INVOICE NUMBER", colR, rY);
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(10);
-    doc.setTextColor(...DARK);
-    doc.text(editedInvoiceNumber, colR, rY + 6.5);
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(9);
+      doc.setTextColor(...DARK);
+      doc.text(editedInvoiceNumber, colMid, secY + 4.5);
 
-    rY += 16;
+      // Col 3: Date Issued
+      doc.setFontSize(6.8);
+      doc.setFont("helvetica", "bold");
+      doc.setTextColor(...TEAL);
+      doc.text("DATE ISSUED", colRight, secY);
 
-    // Date Issued
-    doc.setFontSize(7);
-    doc.setFont("helvetica", "bold");
-    doc.setTextColor(...TEAL);
-    doc.text("DATE ISSUED", colR, rY);
-    doc.setFont("helvetica", "normal");
-    doc.setFontSize(8.5);
-    doc.setTextColor(...GRAY);
-    const issuedStr = new Date(editedDate).toLocaleDateString("en-GB", {
-      day: "numeric", month: "long", year: "numeric",
-    });
-    doc.text(issuedStr, colR, rY + 6.5);
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(8);
+      doc.setTextColor(...DARK);
+      const issuedStr = new Date(editedDate).toLocaleDateString("en-GB", {
+        day: "numeric", month: "long", year: "numeric",
+      });
+      doc.text(issuedStr, colRight, secY + 4.5);
 
-    // Second separator
-    doc.setDrawColor(...LGRAY);
-    doc.line(L, 82, R, 82);
+      // Second separator line
+      doc.setDrawColor(...LGRAY);
+      doc.line(L, 46.5, R, 46.5);
 
-    // ── ITEMS TABLE ──
-    const tableData = invoice.items.map((item) => [
-      item.description,
-      item.rate.toFixed(2),
-      (item.amount ?? item.rate).toFixed(2),
-    ]);
+      // ── ITEMS TABLE ──
+      const tableData = invoice.items.map((item) => {
+        const qtySuffix = item.quantity && item.quantity > 1 ? ` (x${item.quantity})` : "";
+        const desc = `${item.description}${qtySuffix}`;
+        const rate = (item.rate ?? 0).toFixed(2);
+        const amount = (item.amount !== undefined && item.amount !== null
+          ? item.amount
+          : (item.rate ?? 0) * (item.quantity || 1)
+        ).toFixed(2);
+        return [desc, rate, amount];
+      });
 
-    autoTable(doc, {
-      startY: 88,
-      head: [["Description", "Rate", "Amount"]],
-      body: tableData,
-      theme: "plain",
-      headStyles: {
-        fillColor: [235, 240, 248],
-        textColor: NAVY,
-        fontSize: 7.5,
-        fontStyle: "bold",
-        cellPadding: { top: 6, bottom: 6, left: 5, right: 5 },
-        lineColor: LGRAY,
-        lineWidth: { bottom: 0.5, top: 0, left: 0, right: 0 },
-      },
-      bodyStyles: {
-        fontSize: 8.5,
-        textColor: DARK,
-        lineColor: LGRAY,
-        lineWidth: { bottom: 0.3, top: 0, left: 0, right: 0 },
-        cellPadding: { top: 6, bottom: 6, left: 5, right: 5 },
-      },
-      alternateRowStyles: { fillColor: [247, 249, 252] },
-      columnStyles: {
-        0: { halign: "left",  cellWidth: "auto" },
-        1: { halign: "right", cellWidth: 30, font: "courier" },
-        2: { halign: "right", cellWidth: 34, font: "courier", fontStyle: "bold" },
-      },
-      margin: { left: L, right: 18 },
-    });
+      autoTable(doc, {
+        startY: 49.5,
+        head: [["Description", "Rate (AED)", "Amount (AED)"]],
+        body: tableData,
+        theme: "plain",
+        headStyles: {
+          fillColor: [238, 242, 249],
+          textColor: NAVY,
+          fontSize: 7.5,
+          fontStyle: "bold",
+          cellPadding: { top: 3, bottom: 3, left: 4, right: 4 },
+          lineColor: LGRAY,
+          lineWidth: { bottom: 0.4, top: 0, left: 0, right: 0 },
+        },
+        bodyStyles: {
+          fontSize: 8,
+          textColor: DARK,
+          lineColor: LGRAY,
+          lineWidth: { bottom: 0.25, top: 0, left: 0, right: 0 },
+          cellPadding: { top: 2.6, bottom: 2.6, left: 4, right: 4 },
+        },
+        alternateRowStyles: { fillColor: [248, 250, 253] },
+        columnStyles: {
+          0: { halign: "left",  cellWidth: "auto" },
+          1: { halign: "right", cellWidth: 32, font: "courier" },
+          2: { halign: "right", cellWidth: 36, font: "courier", fontStyle: "bold" },
+        },
+        margin: { left: L, right: 16 },
+      });
 
-    const finalY: number = (doc as any).lastAutoTable?.finalY ?? 160;
+      const finalY: number = (doc as any).lastAutoTable?.finalY ?? 95;
 
-    // ── TOTALS BLOCK — big, bold, highlighted (main focal point) ──
-    const boxW = 82;
-    const bX = R - boxW;
-    const boxH = 26;
-    const needed = boxH + 20; // space needed below table
-    const tY = (finalY + needed > pageH - 20)
-      ? (doc.addPage(), 20)  // not enough room — start fresh page
-      : finalY + 10;
+      // ── TOTALS BLOCK ──
+      const boxW = 76;
+      const bX = R - boxW;
+      const boxH = 19;
+      const needed = boxH + 14;
+      const tY = (finalY + needed > pageH - 14)
+        ? (doc.addPage(), 14)
+        : finalY + 5;
 
-    // Filled highlight box behind the total
-    doc.setFillColor(245, 237, 214); // soft gold tint
-    doc.roundedRect(bX, tY, boxW, boxH, 2, 2, "F");
-    doc.setDrawColor(...GOLD);
-    doc.setLineWidth(0.6);
-    doc.roundedRect(bX, tY, boxW, boxH, 2, 2, "S");
+      // Filled highlight box behind the total
+      doc.setFillColor(245, 237, 214); // soft gold tint
+      doc.roundedRect(bX, tY, boxW, boxH, 2, 2, "F");
+      doc.setDrawColor(...GOLD);
+      doc.setLineWidth(0.5);
+      doc.roundedRect(bX, tY, boxW, boxH, 2, 2, "S");
 
-    doc.setFontSize(9.5);
-    doc.setFont("helvetica", "bold");
-    doc.setTextColor(...GRAY);
-    doc.text("TOTAL DUE", bX + 6, tY + 10);
+      doc.setFontSize(8);
+      doc.setFont("helvetica", "bold");
+      doc.setTextColor(...GRAY);
+      doc.text("TOTAL DUE", bX + 5, tY + 6.5);
 
-    doc.setFont("courier", "bold");
-    doc.setFontSize(22);
-    doc.setTextColor(...GOLD);
-    doc.text(total.toFixed(2), R - 6, tY + 20, { align: "right" });
+      doc.setFontSize(7.5);
+      doc.setFont("helvetica", "bold");
+      doc.setTextColor(...TEAL);
+      doc.text("AED", bX + 5, tY + 14);
 
-    doc.setFontSize(9);
-    doc.setFont("helvetica", "bold");
-    doc.setTextColor(...TEAL);
-    doc.text("AED", bX + 6, tY + 20);
+      doc.setFont("courier", "bold");
+      doc.setFontSize(17);
+      doc.setTextColor(...GOLD);
+      doc.text(total.toFixed(2), R - 5, tY + 14, { align: "right" });
 
-    // ── FOOTER ──
-    doc.setFontSize(7);
-    doc.setFont("helvetica", "normal");
-    doc.setTextColor(190, 195, 205);
-    doc.text(
-      `${CO_NAME} · ${CO_CITY} · ${CO_EMAIL}`,
-      pageW / 2,
-      pageH - 10,
-      { align: "center" }
-    );
+      // ── FOOTER ──
+      const totalPages = (doc as any).internal.getNumberOfPages();
+      for (let i = 1; i <= totalPages; i++) {
+        doc.setPage(i);
+        doc.setFontSize(7);
+        doc.setFont("helvetica", "normal");
+        doc.setTextColor(180, 185, 195);
+        doc.text(
+          `${CO_NAME} · ${CO_CITY} · ${CO_EMAIL}`,
+          pageW / 2,
+          pageH - 7,
+          { align: "center" }
+        );
+      }
 
-    // Convert PDF to Blob and Blob URL for reliable browser rendering & printing
-    const pdfBlob = doc.output("blob");
-    const blobUrl = URL.createObjectURL(pdfBlob);
+      // Convert PDF to Blob and Blob URL for reliable browser rendering & printing
+      const pdfBlob = doc.output("blob");
+      const blobUrl = URL.createObjectURL(pdfBlob);
 
-    if (action === "download") {
-      doc.save(`${editedInvoiceNumber}.pdf`);
-    } else {
-      // "preview" or "print": Open Blob URL in new tab for native PDF viewer & printing
-      const pdfWindow = window.open(blobUrl, "_blank");
-      if (!pdfWindow) {
-        // Fallback if popup blocked
+      if (action === "download") {
         doc.save(`${editedInvoiceNumber}.pdf`);
+      } else {
+        // "preview" or "print": Open Blob URL in new tab for native PDF viewer & printing
+        const pdfWindow = window.open(blobUrl, "_blank");
+        if (!pdfWindow) {
+          // Fallback if popup blocked
+          doc.save(`${editedInvoiceNumber}.pdf`);
+        }
       }
-    }
     } catch (err) {
       console.error("[PDF] generation error:", err);
       alert("PDF generation failed: " + (err instanceof Error ? err.message : String(err)));
@@ -336,101 +345,99 @@ export function InvoicePreview({ invoice, onBack, onNewScan }: InvoicePreviewPro
       </div>
 
       {/* ── Invoice Sheet ── */}
-      <div className="bg-card border border-border rounded-xl shadow-md overflow-hidden animate-slide-up">
-        <div className="p-8 md:p-12">
+      <div className="bg-card border border-border rounded-xl shadow-md overflow-hidden animate-slide-up print:border-none print:shadow-none">
+        <div className="p-6 md:p-8">
 
-          {/* Header */}
-          <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-6 pb-8 border-b-2 border-border">
+          {/* Top Header: Logo & Company on Left, Invoice Title & # on Right */}
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-border">
             {/* Left: logo + company */}
-            <div className="flex flex-col gap-3">
-              <div className="flex items-center gap-3">
-                <img
-                  src={logoSrc}
-                  alt="SAFI Digitizer"
-                  className="w-14 h-14 object-contain rounded-lg"
-                />
-                <div>
-                  <p className="text-base font-bold text-foreground">{CO_NAME}</p>
-                  <p className="text-xs text-muted-foreground">{CO_CITY}</p>
-                  <p className="text-xs text-muted-foreground">{CO_PHONE}</p>
-                  <p className="text-xs text-muted-foreground">{CO_EMAIL}</p>
-                </div>
+            <div className="flex items-center gap-3.5">
+              <img
+                src={logoSrc}
+                alt="SAFI Digitizer"
+                className="w-12 h-12 object-contain rounded-lg shrink-0"
+              />
+              <div>
+                <p className="text-base font-bold text-foreground leading-tight">{CO_NAME}</p>
+                <p className="text-xs text-muted-foreground leading-tight mt-0.5">{CO_CITY}</p>
+                <p className="text-xs text-muted-foreground leading-tight mt-0.5">
+                  {CO_PHONE} &middot; {CO_EMAIL}
+                </p>
               </div>
             </div>
 
-            {/* Right: invoice title + meta */}
-            <div className="text-right">
-              <p className="text-[10px] font-label uppercase tracking-widest text-teal-600 dark:text-teal-400 mb-0.5">
-                Invoice
+            {/* Right: invoice title + number */}
+            <div className="sm:text-right">
+              <p className="text-[10px] font-label uppercase tracking-widest text-teal-600 dark:text-teal-400 font-bold mb-0.5">
+                INVOICE
               </p>
-              <p className="text-4xl md:text-5xl font-extrabold tracking-tighter text-foreground leading-none">
+              <p className="text-3xl sm:text-4xl font-extrabold tracking-tighter text-foreground leading-none">
                 #{invoiceNum}
               </p>
+            </div>
+          </div>
 
-              <div className="mt-5 flex flex-col gap-3 items-end">
-                {/* Billed To — inline */}
-                <div className="flex items-start gap-6 justify-end">
-                  <span className="text-[10px] font-label uppercase tracking-widest text-muted-foreground pt-0.5">
-                    Bill To:
-                  </span>
-                  <div className="text-right text-sm">
-                    <p className="font-bold text-foreground">{invoice.clientName}</p>
-                    <p className="text-muted-foreground">{invoice.clientAddress}</p>
-                  </div>
-                </div>
+          {/* Under-header Section: Billed To, Invoice Number, Date Issued in a balanced horizontal row */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 py-3.5 border-b border-border/80">
+            {/* Billed To */}
+            <div className="space-y-0.5">
+              <span className="text-[10px] font-label uppercase tracking-widest text-teal-600 dark:text-teal-400 font-bold block">
+                BILLED TO
+              </span>
+              <p className="text-sm font-bold text-foreground leading-tight">{invoice.clientName}</p>
+              <p className="text-xs text-muted-foreground">{invoice.clientAddress}</p>
+            </div>
 
-                {/* Invoice number — editable */}
-                <div className="flex items-center gap-6 justify-end">
-                  <Label
-                    htmlFor="input-invoice-number"
-                    className="text-[10px] font-label uppercase tracking-widest text-muted-foreground whitespace-nowrap"
-                  >
-                    Invoice Number
-                  </Label>
-                  <Input
-                    id="input-invoice-number"
-                    value={editedInvoiceNumber}
-                    onChange={(e) => setEditedInvoiceNumber(e.target.value)}
-                    className="h-7 w-28 text-right text-sm font-mono font-semibold px-2"
-                    data-testid="input-invoice-number"
-                  />
-                </div>
+            {/* Invoice number — editable */}
+            <div className="space-y-1">
+              <Label
+                htmlFor="input-invoice-number"
+                className="text-[10px] font-label uppercase tracking-widest text-teal-600 dark:text-teal-400 font-bold block"
+              >
+                INVOICE NUMBER
+              </Label>
+              <Input
+                id="input-invoice-number"
+                value={editedInvoiceNumber}
+                onChange={(e) => setEditedInvoiceNumber(e.target.value)}
+                className="h-8 w-full max-w-[170px] text-xs font-mono font-semibold px-2.5 bg-muted/20 border-border/60"
+                data-testid="input-invoice-number"
+              />
+            </div>
 
-                {/* Date issued — editable */}
-                <div className="flex items-center gap-6 justify-end">
-                  <Label
-                    htmlFor="input-date-issued"
-                    className="text-[10px] font-label uppercase tracking-widest text-muted-foreground whitespace-nowrap"
-                  >
-                    Date Issued
-                  </Label>
-                  <Input
-                    id="input-date-issued"
-                    type="date"
-                    value={editedDate}
-                    onChange={(e) => setEditedDate(e.target.value)}
-                    className="h-7 w-36 text-right text-sm px-2"
-                    data-testid="input-date-issued"
-                  />
-                </div>
-              </div>
+            {/* Date issued — editable */}
+            <div className="space-y-1 sm:text-right sm:flex sm:flex-col sm:items-end">
+              <Label
+                htmlFor="input-date-issued"
+                className="text-[10px] font-label uppercase tracking-widest text-teal-600 dark:text-teal-400 font-bold block"
+              >
+                DATE ISSUED
+              </Label>
+              <Input
+                id="input-date-issued"
+                type="date"
+                value={editedDate}
+                onChange={(e) => setEditedDate(e.target.value)}
+                className="h-8 w-full max-w-[170px] sm:text-right text-xs px-2.5 bg-muted/20 border-border/60"
+                data-testid="input-date-issued"
+              />
             </div>
           </div>
 
           {/* Items table */}
-          <div className="mt-8">
+          <div className="mt-5">
             <table className="w-full text-left border-collapse" data-testid="table-preview-items">
               <thead>
                 <tr className="border-b-2 border-border" style={{ backgroundColor: "hsl(217 60% 96%)" }}>
-                  <th className="py-3 px-4 text-[10px] font-label uppercase tracking-widest"
+                  <th className="py-2.5 px-4 text-[10px] font-label uppercase tracking-widest"
                     style={{ color: "hsl(217 60% 35%)" }}>
                     Description
                   </th>
-                  <th className="py-3 px-4 text-[10px] font-label uppercase tracking-widest text-right w-32"
+                  <th className="py-2.5 px-4 text-[10px] font-label uppercase tracking-widest text-right w-32"
                     style={{ color: "hsl(217 60% 35%)" }}>
                     Rate
                   </th>
-                  <th className="py-3 px-4 text-[10px] font-label uppercase tracking-widest text-right w-36"
+                  <th className="py-2.5 px-4 text-[10px] font-label uppercase tracking-widest text-right w-36"
                     style={{ color: "hsl(217 60% 35%)" }}>
                     Amount
                   </th>
@@ -443,17 +450,23 @@ export function InvoicePreview({ invoice, onBack, onNewScan }: InvoicePreviewPro
                     className="border-b border-border/50 last:border-b-0 hover:bg-muted/20 transition-colors"
                     data-testid={`row-preview-${i}`}
                   >
-                    <td className="py-3.5 px-4 text-sm font-mono text-foreground">
+                    <td className="py-2.5 px-4 text-sm font-mono text-foreground">
                       {item.description}
+                      {item.quantity && item.quantity > 1 && (
+                        <span className="text-xs font-sans text-muted-foreground ml-2">(x{item.quantity})</span>
+                      )}
                       {item.isUncertain && (
                         <AlertTriangle className="inline w-3 h-3 text-amber-500 ml-2 mb-0.5" />
                       )}
                     </td>
-                    <td className="py-3.5 px-4 text-sm text-right font-mono text-muted-foreground tabular-nums">
-                      {item.rate.toFixed(2)} AED
+                    <td className="py-2.5 px-4 text-sm text-right font-mono text-muted-foreground tabular-nums">
+                      {(item.rate ?? 0).toFixed(2)} AED
                     </td>
-                    <td className="py-3.5 px-4 text-sm text-right font-mono font-semibold text-foreground tabular-nums">
-                      {(item.amount ?? item.rate).toFixed(2)} AED
+                    <td className="py-2.5 px-4 text-sm text-right font-mono font-semibold text-foreground tabular-nums">
+                      {(item.amount !== undefined && item.amount !== null
+                        ? item.amount
+                        : (item.rate ?? 0) * (item.quantity || 1)
+                      ).toFixed(2)} AED
                     </td>
                   </tr>
                 ))}
@@ -463,12 +476,12 @@ export function InvoicePreview({ invoice, onBack, onNewScan }: InvoicePreviewPro
                   <td colSpan={3} className="pt-2 pb-0 px-4">
                     <div className="flex justify-end">
                       <div
-                        className="flex items-center justify-between gap-8 px-5 py-4 rounded-xl mt-2 mb-1"
-                        style={{ background: "hsl(43 80% 93%)", border: "1.5px solid hsl(43 70% 65%)", minWidth: 220 }}
+                        className="flex items-center justify-between gap-6 px-4 py-2.5 rounded-lg mt-2 mb-1"
+                        style={{ background: "hsl(43 80% 93%)", border: "1.5px solid hsl(43 70% 65%)", minWidth: 200 }}
                         data-testid="text-preview-total"
                       >
                         <div className="flex flex-col gap-0.5">
-                          <span className="text-[10px] font-label uppercase tracking-widest" style={{ color: "hsl(174 60% 35%)" }}>
+                          <span className="text-[10px] font-label uppercase tracking-widest font-bold" style={{ color: "hsl(174 60% 35%)" }}>
                             AED
                           </span>
                           <span className="text-[10px] font-label uppercase tracking-widest text-muted-foreground">
@@ -476,7 +489,7 @@ export function InvoicePreview({ invoice, onBack, onNewScan }: InvoicePreviewPro
                           </span>
                         </div>
                         <span
-                          className="text-2xl font-mono font-extrabold tabular-nums"
+                          className="text-xl font-mono font-extrabold tabular-nums"
                           style={{ color: "hsl(43 85% 35%)" }}
                         >
                           {total.toFixed(2)}
@@ -491,7 +504,7 @@ export function InvoicePreview({ invoice, onBack, onNewScan }: InvoicePreviewPro
         </div>
 
         {/* Footer */}
-        <div className="border-t border-border bg-muted/30 px-8 md:px-12 py-3">
+        <div className="border-t border-border bg-muted/30 px-6 md:px-8 py-2.5">
           <p className="text-[10px] text-center font-label tracking-wider text-muted-foreground/60 uppercase">
             {CO_NAME} &middot; {CO_CITY} &middot; {CO_EMAIL}
           </p>

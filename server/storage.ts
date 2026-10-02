@@ -128,7 +128,7 @@ export class MemStorage implements IStorage {
       totalAmount: 3200,
       status: "draft",
       imageUrl: null,
-      createdAt: new Date(),
+      createdAt: new Date().toISOString(),
     };
     this.invoices.set(inv1.id, inv1);
     const items1: InvoiceItem[] = [
@@ -148,7 +148,7 @@ export class MemStorage implements IStorage {
       totalAmount: 5830,
       status: "draft",
       imageUrl: null,
-      createdAt: new Date(),
+      createdAt: new Date().toISOString(),
     };
     this.invoices.set(inv2.id, inv2);
     const items2: InvoiceItem[] = [
@@ -167,7 +167,7 @@ export class MemStorage implements IStorage {
       totalAmount: 1590,
       status: "draft",
       imageUrl: null,
-      createdAt: new Date(),
+      createdAt: new Date().toISOString(),
     };
     this.invoices.set(inv3.id, inv3);
     const items3: InvoiceItem[] = [
@@ -199,7 +199,7 @@ export class MemStorage implements IStorage {
       totalAmount: invoice.totalAmount,
       status: invoice.status || "draft",
       imageUrl: invoice.imageUrl || null,
-      createdAt: new Date(),
+      createdAt: new Date().toISOString(),
     };
     this.invoices.set(id, newInv);
     return newInv;

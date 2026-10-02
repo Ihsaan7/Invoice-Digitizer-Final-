@@ -24,37 +24,73 @@ export function InvoiceEditor({
   isSaving,
 }: InvoiceEditorProps) {
   const [items, setItems] = useState<ExtractedItem[]>(initialItems);
+  const [hasManuallyEdited, setHasManuallyEdited] = useState(false);
 
-  useEffect(() => { setItems(initialItems); }, [initialItems]);
+  useEffect(() => { 
+    setItems(initialItems.map(item => ({
+      ...item,
+      quantity: item.quantity && item.quantity > 0 ? item.quantity : 1,
+      amount: item.amount !== undefined && item.amount !== null 
+        ? item.amount 
+        : Math.round((item.rate || 0) * (item.quantity || 1) * 100) / 100,
+    }))); 
+  }, [initialItems]);
 
-  const computedTotal = items.reduce((sum, item) => sum + (item.amount ?? item.rate), 0);
-  const displayTotal = (initialGrandTotal && initialGrandTotal > 0) ? initialGrandTotal : computedTotal;
+  const computedTotal = items.reduce((sum, item) => {
+    const amt = item.amount !== undefined && item.amount !== null && !isNaN(item.amount)
+      ? Number(item.amount)
+      : (Number(item.rate) || 0) * (Number(item.quantity) || 1);
+    return sum + amt;
+  }, 0);
+
+  const displayTotal = hasManuallyEdited || !initialGrandTotal || initialGrandTotal <= 0
+    ? computedTotal
+    : initialGrandTotal;
 
   const updateItem = useCallback((index: number, field: keyof ExtractedItem, value: string | number | boolean) => {
+    setHasManuallyEdited(true);
     setItems(prev => {
       const updated = [...prev];
-      updated[index] = { ...updated[index], [field]: value };
+      const item = { ...updated[index] };
+
       if (field === "rate") {
-        updated[index].amount = Number(value);
-        updated[index].quantity = 1;
+        const rate = typeof value === "number" ? value : parseFloat(String(value)) || 0;
+        item.rate = rate;
+        const qty = item.quantity && item.quantity > 0 ? item.quantity : 1;
+        item.amount = Math.round(rate * qty * 100) / 100;
+        item.isUncertain = false;
+      } else if (field === "quantity") {
+        const qty = typeof value === "number" ? value : parseInt(String(value), 10) || 1;
+        item.quantity = qty;
+        item.amount = Math.round((item.rate || 0) * qty * 100) / 100;
+      } else if (field === "amount") {
+        const amt = typeof value === "number" ? value : parseFloat(String(value)) || 0;
+        item.amount = amt;
+        item.isUncertain = false;
+      } else if (field === "description") {
+        item.description = String(value);
+        item.isUncertain = false;
+      } else {
+        (item as any)[field] = value;
       }
-      if (field === "description" || field === "rate") {
-        updated[index].isUncertain = false;
-      }
+
+      updated[index] = item;
       return updated;
     });
   }, []);
 
   const removeItem = useCallback((index: number) => {
+    setHasManuallyEdited(true);
     setItems(prev => prev.filter((_, i) => i !== index));
   }, []);
 
   const addItem = useCallback(() => {
+    setHasManuallyEdited(true);
     setItems(prev => [...prev, { description: "", quantity: 1, rate: 0, amount: 0, isUncertain: false }]);
   }, []);
 
   const uncertainCount = items.filter(i => i.isUncertain).length;
-  const saveTotal = items.reduce((sum, item) => sum + (item.amount ?? item.rate), 0);
+  const saveTotal = computedTotal;
 
   return (
     <div className="max-w-4xl mx-auto space-y-5">
@@ -123,7 +159,10 @@ export function InvoiceEditor({
                 <th className="text-left text-[10px] font-label uppercase tracking-widest text-muted-foreground px-5 py-3">
                   Description
                 </th>
-                <th className="text-right text-[10px] font-label uppercase tracking-widest text-muted-foreground px-5 py-3 w-36">
+                <th className="text-center text-[10px] font-label uppercase tracking-widest text-muted-foreground px-3 py-3 w-20">
+                  Qty
+                </th>
+                <th className="text-right text-[10px] font-label uppercase tracking-widest text-muted-foreground px-5 py-3 w-32">
                   Rate (AED)
                 </th>
                 <th className="text-right text-[10px] font-label uppercase tracking-widest text-muted-foreground px-5 py-3 w-36">
@@ -165,23 +204,38 @@ export function InvoiceEditor({
                       )}
                     </div>
                   </td>
+                  <td className="px-3 py-3 text-center">
+                    <Input
+                      type="number"
+                      min="1"
+                      step="1"
+                      value={item.quantity || 1}
+                      onChange={(e) => updateItem(index, "quantity", e.target.value === "" ? 1 : Math.max(1, parseInt(e.target.value, 10)))}
+                      className="h-8 text-sm text-center font-mono border-transparent bg-transparent focus:bg-card focus:border-border transition-all w-16 mx-auto"
+                      data-testid={`input-quantity-${index}`}
+                    />
+                  </td>
                   <td className="px-5 py-3">
                     <Input
                       type="number"
-                      value={item.rate || ""}
+                      step="any"
+                      value={item.rate !== undefined && item.rate !== null && item.rate !== 0 ? item.rate : ""}
                       placeholder="0.00"
-                      onChange={(e) => updateItem(index, "rate", Number(e.target.value))}
+                      onChange={(e) => updateItem(index, "rate", e.target.value === "" ? 0 : parseFloat(e.target.value))}
                       className="h-8 text-sm text-right font-mono border-transparent bg-transparent focus:bg-card focus:border-border transition-all"
                       data-testid={`input-rate-${index}`}
                     />
                   </td>
-                  <td className="px-5 py-3 text-right">
-                    <span
-                      className="text-sm font-mono font-medium text-foreground tabular-nums"
-                      data-testid={`text-amount-${index}`}
-                    >
-                      {(item.amount ?? item.rate).toFixed(2)}
-                    </span>
+                  <td className="px-5 py-3">
+                    <Input
+                      type="number"
+                      step="any"
+                      value={item.amount !== undefined && item.amount !== null && item.amount !== 0 ? item.amount : (item.rate ? item.rate * (item.quantity || 1) : "")}
+                      placeholder="0.00"
+                      onChange={(e) => updateItem(index, "amount", e.target.value === "" ? 0 : parseFloat(e.target.value))}
+                      className="h-8 text-sm text-right font-mono font-medium border-transparent bg-transparent focus:bg-card focus:border-border transition-all"
+                      data-testid={`input-amount-${index}`}
+                    />
                   </td>
                   <td className="px-3 py-3 text-center">
                     <button
@@ -197,7 +251,7 @@ export function InvoiceEditor({
 
               {items.length === 0 && (
                 <tr>
-                  <td colSpan={5} className="px-5 py-14 text-center text-sm text-muted-foreground">
+                  <td colSpan={6} className="px-5 py-14 text-center text-sm text-muted-foreground">
                     No items yet. Add items manually or go back and upload an image.
                   </td>
                 </tr>

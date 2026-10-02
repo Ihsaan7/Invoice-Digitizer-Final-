@@ -1,5 +1,7 @@
 import mongoose from "mongoose";
 
+mongoose.set("bufferCommands", false);
+
 let connectPromise: Promise<typeof mongoose> | null = null;
 
 export function connectMongo(): Promise<typeof mongoose> {

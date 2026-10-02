@@ -311,9 +311,16 @@
 
 /* ─── MEDIA PRINT STYLES ────────────────────────────────────── */
 @media print {
-  body {
+  @page {
+    size: A4 portrait;
+    margin: 10mm 12mm;
+  }
+  html, body {
     background: white !important;
     color: black !important;
+    height: auto !important;
+    overflow: visible !important;
+    font-size: 11pt !important;
   }
   header, nav, button, .no-print {
     display: none !important;
@@ -330,5 +337,14 @@
     border: none !important;
     box-shadow: none !important;
     background: transparent !important;
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+  }
+  table {
+    page-break-inside: auto;
+  }
+  tr {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
   }
 }
